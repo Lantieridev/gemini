@@ -6,36 +6,59 @@
     <title>Mi Perfil - Complejo Deportivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;700;800&display.swap');
         body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
         .tab-button.active {
-            border-bottom-color: #3B82F6; /* blue-500 */
-            color: #3B82F6; /* blue-500 */
+            border-bottom-color: #059669;
+            color: #10B981;
             font-weight: 600;
         }
+
+        .dark-input {
+            background-color: #1F2937;
+            border-color: #374151;
+            color: #F9FAFB;
+        }
+        .dark-input:focus {
+            border-color: #059669;
+            --tw-ring-color: #059669;
+        }
+        .dark-input:read-only {
+            background-color: #374151;
+            cursor: not-allowed;
+            color: #9CA3AF;
+        }
+        
         .loader {
-            border-top-color: #3498db;
+            border-top-color: #10B981;
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
         .modal { transition: opacity 0.25s ease; }
         .modal-content { transition: transform 0.25s ease; }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="bg-gray-950 text-gray-200 flex flex-col min-h-screen">
 
-    <header class="bg-white shadow-md sticky top-0 z-40">
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div class="absolute left-[calc(50%-10rem)] top-20 sm:left-[calc(50%-30rem)] aspect-[1155/678] w-[72.1875rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#059669] to-[#030712] opacity-20 sm:opacity-10" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
+
+    <header class="bg-gray-900 shadow-xl sticky top-0 z-40">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <a href="index.html" class="flex-shrink-0 flex items-center">
-                    <span class="text-2xl font-bold text-blue-600">Complejo</span>
-                    <span class="text-2xl font-bold text-gray-700">Deportivo</span>
+                    <span class="text-2xl font-bold text-emerald-500">Complejo</span>
+                    <span class="text-2xl font-bold text-gray-100">Deportivo</span>
                 </a>
                 <div>
-                     <a href="index.html" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                     <a href="index.html" class="text-sm font-medium text-emerald-500 hover:text-emerald-400 transition-colors duration-200">
                         &larr; Volver al inicio
                     </a>
                 </div>
@@ -44,29 +67,29 @@
     </header>
 
     <main class="flex-grow container mx-auto p-4 md:p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Mi Perfil</h1>
-        <p class="text-lg text-gray-600 mb-6">Hola, <span id="user-email" class="font-medium">...</span></p>
+        <h1 class="text-3xl font-bold text-white mb-2">Mi Perfil</h1>
+        <p class="text-lg text-gray-400 mb-6">Hola, <span id="user-email" class="font-medium text-gray-200">...</span></p>
 
         <div>
-            <div class="border-b border-gray-300">
-                <nav class="-mb-px flex space-x-6" role="tablist">
-                    <button role="tab" aria-selected="true" id="tab-proximas" class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            <div class="border-b border-gray-700">
+                <nav class="-mb-px flex space-x-8" role="tablist">
+                    <button role="tab" aria-selected="true" id="tab-proximas" class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500 transition-colors duration-200">
                         Próximas Reservas
                     </button>
-                    <button role="tab" aria-selected="false" id="tab-historial" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="false" id="tab-historial" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500 transition-colors duration-200">
                         Historial de Reservas
                     </button>
-                    <button role="tab" aria-selected="false" id="tab-datos" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="false" id="tab-datos" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500 transition-colors duration-200">
                         Mis Datos
                     </button>
                 </nav>
             </div>
 
-            <div class="mt-6">
+            <div class="mt-8">
                 <div role="tabpanel" id="panel-proximas">
                     <div id="loader-proximas" class="text-center p-8">
-                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mx-auto"></div>
-                        <p class="mt-2 text-gray-600">Cargando próximas reservas...</p>
+                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-700 h-12 w-12 mx-auto"></div>
+                        <p class="mt-2 text-gray-400">Cargando próximas reservas...</p>
                     </div>
                     <div id="lista-proximas" class="space-y-4">
                         </div>
@@ -74,44 +97,44 @@
 
                 <div role="tabpanel" id="panel-historial" class="hidden">
                     <div id="loader-historial" class="text-center p-8">
-                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mx-auto"></div>
-                        <p class="mt-2 text-gray-600">Cargando historial...</p>
+                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-700 h-12 w-12 mx-auto"></div>
+                        <p class="mt-2 text-gray-400">Cargando historial...</p>
                     </div>
                     <div id="lista-historial" class="space-y-4">
                         </div>
                 </div>
 
                 <div role="tabpanel" id="panel-datos" class="hidden">
-                    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
+                    <div class="max-w-xl mx-auto bg-gray-900 p-6 rounded-lg shadow-xl border border-gray-800">
                         
                         <div id="loader-perfil" class="text-center p-8">
-                            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mx-auto"></div>
-                            <p class="mt-2 text-gray-600">Cargando tus datos...</p>
+                            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-700 h-12 w-12 mx-auto"></div>
+                            <p class="mt-2 text-gray-400">Cargando tus datos...</p>
                         </div>
                         
                         <form id="form-perfil" class="hidden">
-                            <div class="space-y-4">
+                            <div class="space-y-5">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Email (Usuario)</label>
-                                    <input type="email" id="perfil-email" readonly class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 cursor-not-allowed sm:text-sm">
+                                    <label class="block text-sm font-medium text-gray-300">Email (Usuario)</label>
+                                    <input type="email" id="perfil-email" readonly class="dark-input mt-1 block w-full rounded-md shadow-sm sm:text-sm">
                                 </div>
                                 <div>
-                                    <label for="perfil-nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                    <input type="text" id="perfil-nombre" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <label for="perfil-nombre" class="block text-sm font-medium text-gray-300">Nombre</label>
+                                    <input type="text" id="perfil-nombre" required class="dark-input mt-1 block w-full rounded-md shadow-sm sm:text-sm">
                                 </div>
                                 <div>
-                                    <label for="perfil-apellido" class="block text-sm font-medium text-gray-700">Apellido</label>
-                                    <input type="text" id="perfil-apellido" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <label for="perfil-apellido" class="block text-sm font-medium text-gray-300">Apellido</label>
+                                    <input type="text" id="perfil-apellido" required class="dark-input mt-1 block w-full rounded-md shadow-sm sm:text-sm">
                                 </div>
                                 <div>
-                                    <label for="perfil-telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                    <input type="tel" id="perfil-telefono" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <label for="perfil-telefono" class="block text-sm font-medium text-gray-300">Teléfono</label>
+                                    <input type="tel" id="perfil-telefono" required class="dark-input mt-1 block w-full rounded-md shadow-sm sm:text-sm">
                                 </div>
                                 <div>
-                                    <label for="perfil-documento" class="block text-sm font-medium text-gray-700">Documento</label>
-                                    <input type="text" id="perfil-documento" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    <label for="perfil-documento" class="block text-sm font-medium text-gray-300">Documento</label>
+                                    <input type="text" id="perfil-documento" required class="dark-input mt-1 block w-full rounded-md shadow-sm sm:text-sm">
                                 </div>
-                                <button type="submit" id="btn-guardar-perfil" class="w-full rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                                <button type="submit" id="btn-guardar-perfil" class="w-full rounded-md border border-transparent bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-emerald-700 transition-colors duration-300">
                                     Guardar Cambios
                                 </button>
                             </div>
@@ -122,56 +145,89 @@
         </div>
     </main>
 
-    <footer class="bg-gray-800 text-gray-400 mt-auto">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+    <footer class="bg-gray-900 text-gray-400 border-t border-gray-800 py-12 mt-auto">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            
+            <div>
+                <h3 class="text-xl font-bold text-gray-100 mb-4">Complejo Deportivo</h3>
+                <p class="mb-4">Tu plataforma #1 para reservar canchas de fútbol. Calidad, comodidad y pasión por el deporte.</p>
+                <div class="flex space-x-4 mt-6">
+                    <a href="#" class="text-gray-400 hover:text-emerald-500 transition-colors duration-200"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.776-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.657 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-emerald-500 transition-colors duration-200"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.002 3.714.051 1.104.122 1.633.275 2.05.432.58.236.966.52 1.32.885.363.363.647.75.886 1.32.158.417.31.946.433 2.05.049.93.051 1.286.051 3.715s-.002 2.784-.051 3.714c-.122 1.104-.275 1.633-.432 2.05-.236.58-.52 0-.885 1.32-.363.363-.75.647-1.32.886-.417.158-.946.31-2.05.433-.93.049-1.286.051-3.715.051s-2.784-.002-3.714-.051c-1.104-.122-1.633-.275-2.05-.432-.58-.236-.966.52-1.32-.885-.363.363-.647-.75-.886-1.32-.158-.417-.31-.946.433 2.05-.049-.93-.051-1.286-.051-3.715s.002-2.784.051-3.714c.122-1.104.275-1.633.432 2.05.236-.58.52-.966.885-1.32.363.363.75-.647 1.32-.886.417-.158.946-.31 2.05-.433.93-.049 1.286.051 3.715-.051zM12 4.419c-2.86 0-3.25.01-4.38.06-1.07.124-1.61.277-1.95.408-.43.167-.704.37-1.002.668-.298.298-.5.572-.667 1.002-.13.34-.284.88-.408 1.95-.05.93-.06 1.32-.06 4.38s.01 3.25.06 4.38c.124 1.07.277 1.61.408 1.95.167.43.37.704.668 1.002.298.298.572.5.952.667.34.13 1.01.284 1.94.408 1.13.05 4.09.06 4.38.06s3.25-.01 4.38-.06c1.07-.124 1.61-.277 1.95-.408.43-.167.704-.37 1.002-.668.298-.298-.5-.572-.667 1.002.13-.34.284-.88.408-1.95.05-.93.06-1.32.06-4.38s-.01-3.25-.06-4.38c-.124-1.07-.277-1.61-.408-1.95-.167-.43-.37-.704-.668-1.002-.298-.298-.572-.5-.952-.667-.34-.13-1.01-.284-1.94-.408-.05-.93-.06-1.32-.06-4.38zm-1.82 7.78a3.61 3.61 0 100-7.22 3.61 3.61 0 000 7.22zM12 6.8c-2.09 0-3.8 1.71-3.8 3.8s1.71 3.8 3.8 3.8 3.8-1.71 3.8-3.8-1.71-3.8-3.8-3.8z" clip-rule="evenodd" /></svg></a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Navegación Rápida</h3>
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="hover:text-emerald-500 transition-colors duration-200">Inicio</a></li>
+                    <li><a href="reservar.html" class="hover:text-emerald-500 transition-colors duration-200">Reservar Ahora</a></li>
+                    <li><a href="perfil.html" class="hover:text-emerald-500 transition-colors duration-200">Mi Perfil</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Contáctanos</h3>
+                <p class="mb-2">Email: <a href="mailto:info@complejodeportivo.com" class="hover:text-emerald-500 transition-colors duration-200">info@complejodeportivo.com</a></p>
+                <p>Teléfono: <a href="tel:+541155551234" class="hover:text-emerald-500 transition-colors duration-200">+54 11 5555-1234</a></p>
+                <p class="mt-4">Dirección: Av. Siempre Viva 742, Buenos Aires, Argentina</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Información Legal</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Términos y Condiciones</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Política de Privacidad</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Mapa del Sitio</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
             <p>&copy; 2025 Complejo Deportivo. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <div id="modal-confirmacion" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
-                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <div id="modal-confirmacion" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-xl w-full max-w-md p-6 border border-gray-700">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-900">
+                <svg class="h-6 w-6 text-yellow-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
             <div class="mt-3 text-center sm:mt-5">
-                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-confirm-titulo">Confirmar Acción</h3>
+                <h3 class="text-lg font-medium leading-6 text-white" id="modal-confirm-titulo">Confirmar Acción</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500" id="modal-confirm-mensaje">¿Estás seguro?</p>
+                    <p class="text-sm text-gray-400" id="modal-confirm-mensaje">¿Estás seguro?</p>
                 </div>
             </div>
             <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                 <button type="button" id="btn-confirmar" class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 sm:col-start-2 sm:text-sm">
                     Confirmar
                 </button>
-                <button type="button" id="btn-cancelar" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:col-start-1 sm:mt-0 sm:text-sm">
+                <button type="button" id="btn-cancelar" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-600 bg-gray-800 px-4 py-2 text-base font-medium text-gray-200 shadow-sm hover:bg-gray-700 sm:col-start-1 sm:mt-0 sm:text-sm">
                     Cerrar
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="modal-alerta" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <div id="modal-alerta" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-xl w-full max-w-md p-6 border border-gray-700">
             <div class="text-center">
-                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-alerta-titulo">Éxito</h3>
+                <h3 class="text-lg font-medium leading-6 text-white" id="modal-alerta-titulo">Éxito</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500" id="modal-alerta-mensaje">Operación completada.</p>
+                    <p class="text-sm text-gray-400" id="modal-alerta-mensaje">Operación completada.</p>
                 </div>
             </div>
             <div class="mt-5 sm:mt-6">
-                <button type="button" id="btn-alerta-ok" class="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 sm:text-sm">
+                <button type="button" id="btn-alerta-ok" class="inline-flex w-full justify-center rounded-md border border-transparent bg-emerald-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-emerald-700 sm:text-sm">
                     Entendido
                 </button>
             </div>
         </div>
     </div>
 
-
     <script src="auth.js"></script>
     <script>
-        // --- 1. PROTEGER LA PÁGINA ---
+        // ... (código JS sin cambios) ...
         try {
             protegerPagina(['Cliente']);
         } catch (e) {
@@ -179,18 +235,15 @@
             throw new Error("Redireccionando al login...");
         }
 
-        // --- 2. LÓGICA DE LA PÁGINA ---
         const { clienteId, email } = AuthService.getUserData();
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Cargar datos del usuario y reservas
             document.getElementById('user-email').textContent = email;
             document.getElementById('perfil-email').value = email;
             
             cargarReservas();
-            cargarDatosPerfil(); // Cargar datos del formulario
+            cargarDatosPerfil();
             
-            // Configurar Pestañas
             const tabs = document.querySelectorAll('.tab-button');
             const panels = document.querySelectorAll('[role="tabpanel"]');
             tabs.forEach(tab => {
@@ -202,11 +255,9 @@
                 });
             });
 
-            // Configurar Modales
             document.getElementById('btn-cancelar').addEventListener('click', () => document.getElementById('modal-confirmacion').classList.add('hidden'));
             document.getElementById('btn-alerta-ok').addEventListener('click', () => document.getElementById('modal-alerta').classList.add('hidden'));
 
-            // Listener para botones de cancelar (delegación de eventos)
             document.getElementById('lista-proximas').addEventListener('click', (event) => {
                 const cancelButton = event.target.closest('.btn-cancelar');
                 if (cancelButton) {
@@ -215,13 +266,9 @@
                 }
             });
 
-            // Listener para el formulario de perfil
             document.getElementById('form-perfil').addEventListener('submit', handleGuardarPerfil);
         });
 
-        /**
-         * Carga todas las reservas del cliente y las clasifica.
-         */
         async function cargarReservas() {
             mostrarLoader('proximas', true);
             mostrarLoader('historial', true);
@@ -253,16 +300,13 @@
 
             } catch (error) {
                 console.error("Error al cargar reservas:", error);
-                document.getElementById('lista-proximas').innerHTML = `<p class="text-red-600">Error al cargar reservas: ${error.message}</p>`;
+                document.getElementById('lista-proximas').innerHTML = `<p class="text-red-500">Error al cargar reservas: ${error.message}</p>`;
             } finally {
                 mostrarLoader('proximas', false);
                 mostrarLoader('historial', false);
             }
         }
 
-        /**
-         * Muestra u oculta el spinner de carga.
-         */
         function mostrarLoader(seccion, mostrar) {
             const loader = document.getElementById(`loader-${seccion}`);
             const lista = document.getElementById(`lista-${seccion}`);
@@ -270,15 +314,12 @@
             if (lista) lista.classList.toggle('hidden', mostrar);
         }
 
-        /**
-         * Dibuja las tarjetas de reserva en el HTML.
-         */
         function renderReservas(reservas, elementoId) {
             const contenedor = document.getElementById(elementoId);
-            contenedor.innerHTML = ''; // Limpiar
+            contenedor.innerHTML = '';
 
             if (reservas.length === 0) {
-                contenedor.innerHTML = `<div class="bg-white p-6 rounded-lg shadow-sm text-center text-gray-500">
+                contenedor.innerHTML = `<div class="bg-gray-900 border border-gray-800 p-6 rounded-lg shadow-lg text-center text-gray-400">
                     <p>No tienes reservas en esta categoría.</p>
                 </div>`;
                 return;
@@ -294,24 +335,24 @@
                 const estadoColor = getEstadoColor(reserva.estado);
 
                 const cardHTML = `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-gray-900 rounded-lg shadow-lg overflow-hidden border border-gray-800">
                     <div class="p-5">
                         <div class="flex flex-col sm:flex-row justify-between">
                             <div>
-                                <h3 class="text-xl font-semibold text-gray-900">${canchaNombre}</h3>
-                                <p class="text-md text-gray-600 capitalize">${fecha}</p>
-                                <p class="text-md text-gray-600">${horaInicio} a ${horaFin} hs</p>
+                                <h3 class="text-xl font-semibold text-white">${canchaNombre}</h3>
+                                <p class="text-md text-gray-400 capitalize">${fecha}</p>
+                                <p class="text-md text-gray-400">${horaInicio} a ${horaFin} hs</p>
                             </div>
                             <div class="mt-4 sm:mt-0 sm:text-right">
                                 <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium ${estadoColor}">
                                     ${reserva.estado}
                                 </span>
-                                <p class="text-2xl font-bold text-gray-900 mt-1">$${reserva.total.toLocaleString('es-AR')}</p>
+                                <p class="text-2xl font-bold text-white mt-1">$${reserva.total.toLocaleString('es-AR')}</p>
                             </div>
                         </div>
                         ${esCancelable ? `
-                        <div class="mt-4 pt-4 border-t border-gray-200 text-right">
-                            <button class="btn-cancelar inline-flex items-center px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50"
+                        <div class="mt-4 pt-4 border-t border-gray-700 text-right">
+                            <button class="btn-cancelar inline-flex items-center px-4 py-2 border border-red-700 rounded-md shadow-sm text-sm font-medium text-red-400 bg-gray-900 hover:bg-red-900/50 hover:text-red-300 transition-colors duration-200"
                                     data-reserva-id="${reserva.reservaId}">
                                 <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -329,32 +370,26 @@
         function getEstadoColor(estado) {
             switch (estado.toLowerCase()) {
                 case 'confirmada':
-                    return 'bg-green-100 text-green-800';
+                    return 'bg-emerald-900 text-emerald-200';
                 case 'cancelada':
-                    return 'bg-red-100 text-red-800';
+                    return 'bg-red-900 text-red-200';
                 case 'pendiente':
-                    return 'bg-yellow-100 text-yellow-800';
+                    return 'bg-yellow-900 text-yellow-200';
                 default:
-                    return 'bg-gray-100 text-gray-800';
+                    return 'bg-gray-700 text-gray-200';
             }
         }
 
-        /**
-         * Muestra el modal de confirmación para cancelar.
-         */
         function handleCancelarClick(reservaId) {
             abrirModalConfirmacion(
                 'Cancelar Reserva',
                 '¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.',
-                () => { // Esta es la función de callback
+                () => {
                     cancelarReserva(reservaId);
                 }
             );
         }
 
-        /**
-         * Llama a la API para cancelar la reserva.
-         */
         async function cancelarReserva(reservaId) {
             const dto = {
                 reservaId: parseInt(reservaId),
@@ -369,7 +404,7 @@
                 });
                 
                 abrirModalAlerta('Reserva Cancelada', 'Tu reserva ha sido cancelada exitosamente.');
-                cargarReservas(); // Recargar la lista
+                cargarReservas();
 
             } catch (error) {
                 console.error('Error al cancelar:', error);
@@ -377,18 +412,12 @@
             }
         }
 
-        // --- FUNCIONES DE PERFIL (NUEVAS) ---
-
-        /**
-         * Carga los datos del cliente en el formulario "Mis Datos".
-         */
         async function cargarDatosPerfil() {
             document.getElementById('loader-perfil').classList.remove('hidden');
             document.getElementById('form-perfil').classList.add('hidden');
             
             try {
-                // Gracias a los cambios en ClienteController, esto ahora funciona
-                const clienteData = await apiFetch(`/api/admin/clientes/${clienteId}`);
+                const clienteData = await apiFetch(`/admin/clientes/${clienteId}`);
                 
                 document.getElementById('perfil-nombre').value = clienteData.nombre;
                 document.getElementById('perfil-apellido').value = clienteData.apellido;
@@ -405,9 +434,6 @@
             }
         }
 
-        /**
-         * Maneja el envío del formulario de "Mis Datos".
-         */
         async function handleGuardarPerfil(event) {
             event.preventDefault();
             const boton = document.getElementById('btn-guardar-perfil');
@@ -415,16 +441,15 @@
             boton.disabled = true;
 
             const dto = {
-                nombre: document.getElementById('perfil-nombre').value,
-                apellido: document.getElementById('perfil-apellido').value,
-                telefono: document.getElementById('perfil-telefono').value,
-                documento: document.getElementById('perfil-documento').value,
-                email: document.getElementById('perfil-email').value // El DTO lo requiere
+                Nombre: document.getElementById('perfil-nombre').value,
+                Apellido: document.getElementById('perfil-apellido').value,
+                Telefono: document.getElementById('perfil-telefono').value,
+                Documento: document.getElementById('perfil-documento').value,
+                Email: document.getElementById('perfil-email').value
             };
 
             try {
-                // La API ahora permite a los clientes hacer PUT en su propio ID
-                await apiFetch(`/api/admin/clientes/${clienteId}`, {
+                await apiFetch(`/admin/clientes/${clienteId}`, {
                     method: 'PUT',
                     body: JSON.stringify(dto)
                 });
@@ -440,14 +465,13 @@
             }
         }
 
-        // --- Funciones de Modales (Genéricas) ---
         function abrirModalConfirmacion(titulo, mensaje, onConfirmCallback) {
             const modal = document.getElementById('modal-confirmacion');
             document.getElementById('modal-confirm-titulo').textContent = titulo;
             document.getElementById('modal-confirm-mensaje').textContent = mensaje;
             
             const btnConfirmar = document.getElementById('btn-confirmar');
-            const btnNuevo = btnConfirmar.cloneNode(true); // Clonar para limpiar listeners
+            const btnNuevo = btnConfirmar.cloneNode(true);
             btnConfirmar.parentNode.replaceChild(btnNuevo, btnConfirmar);
             
             btnNuevo.addEventListener('click', () => {
@@ -455,7 +479,7 @@
                 if (onConfirmCallback) {
                     onConfirmCallback();
                 }
-            }, { once: true }); // El listener se ejecuta una sola vez
+            }, { once: true });
             
             modal.classList.remove('hidden');
         }

@@ -13,10 +13,21 @@ namespace complejoDeportivo.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Complejo>> GetAllAsync()
+        public async Task<IEnumerable<Complejo>> GetAllAsync(string? searchTerm = null)
         {
             // Incluimos la Dirección
-            return await _context.Complejos.Include(c => c.Direccion).ToListAsync();
+            var query = _context.Complejos.Include(c => c.Direccion).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var lowerTerm = searchTerm.ToLower().Trim();
+                query = query.Where(c =>
+                    c.Nombre.ToLower().Contains(lowerTerm) ||
+                    c.Direccion.Ciudad.ToLower().Contains(lowerTerm)
+                );
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Complejo?> GetByIdAsync(int id)
@@ -59,7 +70,7 @@ namespace complejoDeportivo.Repositories.Implementations
 
         public async Task<bool> UpdateAsync(Complejo complejo, Direccion direccion)
         {
-             using var transaction = await _context.Database.BeginTransactionAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 // 1. Actualizar la Dirección
@@ -70,7 +81,7 @@ namespace complejoDeportivo.Repositories.Implementations
                 complejo.DireccionId = direccion.DireccionId; // Asegurarse que el ID esté asignado
                 _context.Entry(complejo).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                
+
                 await transaction.CommitAsync();
                 return true;
             }
@@ -88,7 +99,7 @@ namespace complejoDeportivo.Repositories.Implementations
             {
                 return false;
             }
-            
+
             // Borrar un complejo requiere borrar su dirección y puede fallar si tiene canchas (Foreign Key).
             // Por simplicidad, se intenta el borrado.
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -96,7 +107,7 @@ namespace complejoDeportivo.Repositories.Implementations
             {
                 _context.Complejos.Remove(complejo);
                 await _context.SaveChangesAsync();
-                
+
                 // Borramos también la dirección asociada
                 if (complejo.Direccion != null)
                 {
@@ -109,9 +120,9 @@ namespace complejoDeportivo.Repositories.Implementations
             }
             catch (Exception)
             {
-                 await transaction.RollbackAsync();
-                 // Lanzamos un error específico si falla (ej. por tener canchas asociadas)
-                 throw new InvalidOperationException("No se puede eliminar el complejo. Asegúrese de que no tenga canchas u otros elementos asociados.");
+                await transaction.RollbackAsync();
+                // Lanzamos un error específico si falla (ej. por tener canchas asociadas)
+                throw new InvalidOperationException("No se puede eliminar el complejo. Asegúrese de que no tenga canchas u otros elementos asociados.");
             }
         }
     }

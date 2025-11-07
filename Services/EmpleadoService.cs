@@ -28,9 +28,9 @@ namespace complejoDeportivo.Services.Implementations
             };
         }
 
-        public async Task<IEnumerable<EmpleadoDTO>> GetAllAsync()
+        public async Task<IEnumerable<EmpleadoDTO>> GetAllAsync(string? searchTerm = null)
         {
-            var empleados = await _empleadoRepo.GetAllAsync();
+            var empleados = await _empleadoRepo.GetAllAsync(searchTerm);
             return empleados.Select(MapToDTO);
         }
 

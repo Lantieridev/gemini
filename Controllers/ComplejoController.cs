@@ -20,9 +20,9 @@ namespace complejoDeportivo.Controllers
 
         [HttpGet]
         [AllowAnonymous] // Permitimos ver complejos sin loguearse (útil para `ReservaController`)
-        public async Task<ActionResult<IEnumerable<ComplejoDetalleDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ComplejoDetalleDTO>>> GetAll([FromQuery] string? searchTerm)
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(searchTerm));
         }
 
         [HttpGet("{id}")]

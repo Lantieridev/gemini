@@ -19,9 +19,9 @@ namespace complejoDeportivo.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmpleadoDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmpleadoDTO>>> GetAll([FromQuery] string? searchTerm)
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(searchTerm));
         }
 
         [HttpGet("{id}")]

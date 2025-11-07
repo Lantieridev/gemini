@@ -3,186 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complejo Deportivo - Inicio</title>
+    <title>Complejo Deportivo - Reserva tu Cancha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;700;800&display.swap');
         body { font-family: 'Inter', sans-serif; }
-        .modal { transition: opacity 0.25s ease; }
-        .modal-content { transition: transform 0.25s ease; }
-        .horario-btn.selected {
-            background-color: #2563EB; /* bg-blue-600 */
-            color: white;
-            font-weight: 600;
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        
+        .hero-full-height {
+            height: 100vh;
+            min-height: 600px;
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+        }
+        .fade-in-delay-1 { animation-delay: 0.3s; }
+        .fade-in-delay-2 { animation-delay: 0.6s; }
+        .fade-in-delay-3 { animation-delay: 0.9s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-icon:hover svg {
+            transform: scale(1.15);
+            transition: transform 0.2s ease-in-out;
+            color: #10B981;
+        }
+
+        .shadow-custom-dark {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-950 text-gray-200 flex flex-col min-h-screen">
 
-    <header class="bg-white shadow-md sticky top-0 z-40">
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div class="absolute left-[calc(50%-10rem)] top-20 sm:left-[calc(50%-30rem)] aspect-[1155/678] w-[72.1875rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#059669] to-[#030712] opacity-20 sm:opacity-10" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
+
+    <header class="bg-gray-900 shadow-xl sticky top-0 z-40">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <span class="text-2xl font-bold text-blue-600">Complejo</span>
-                    <span class="text-2xl font-bold text-gray-700">Deportivo</span>
+                    <span class="text-2xl font-bold text-emerald-500">Complejo</span>
+                    <span class="text-2xl font-bold text-gray-100">Deportivo</span>
                 </div>
                 
                 <div class="hidden md:flex md:space-x-8">
-                    <a href="#" class="font-medium text-gray-900 hover:text-blue-600">Inicio</a>
-                    <a href="#" class="font-medium text-gray-500 hover:text-blue-600">Sobre Nosotros</a>
-                    <a href="#" class="font-medium text-gray-500 hover:text-blue-600">Contacto</a>
+                    <a href="index.html" class="font-medium text-gray-100 hover:text-emerald-400 transition-colors duration-200">Inicio</a>
+                    <a href="complejos.html" class="font-medium text-gray-400 hover:text-emerald-400 transition-colors duration-200">Complejos</a>
+                    <a href="#" class="font-medium text-gray-400 hover:text-emerald-400 transition-colors duration-200">Contacto</a>
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <button id="btn-reservar" disabled class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium shadow-sm hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        Reservar Ahora
+                    <button id="btn-reservar" disabled class="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium shadow-custom-dark hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200">
+                        Reservar
                     </button>
                     
                     <div id="auth-links-logged-out" class="hidden">
-                        <a href="login.html" id="btn-login" class="text-sm font-medium text-gray-500 hover:text-gray-900">Login</a>
-                        <a href="login.html#registro" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200">
+                        <a href="login.html" id="btn-login" class="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Login</a>
+                        <a href="login.html#registro" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors duration-200">
                             Registrarse
                         </a>
                     </div>
 
                     <div id="auth-links-logged-in" class="hidden relative">
-                        <button id="btn-user-menu" class="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <button id="btn-user-menu" class="flex items-center text-sm font-medium text-gray-200 hover:text-emerald-400 transition-colors duration-200">
                             <span id="user-email-display">mi-cuenta@...</span>
                             <svg class="ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>
                         <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-                            
-                            <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mi Perfil / Reservas</a>
-                            
-                            <button id="btn-logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar Sesión</button>
+                            <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Mi Perfil / Reservas</a>
+                            <button id="btn-logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">Cerrar Sesión</button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </nav>
     </header>
 
     <main>
-        <div class="relative bg-gray-800 text-white">
-            <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold tracking-tight">
-                    Reserva tu cancha
+        <div class="relative hero-full-height flex items-center justify-center" style="background-image: url('img/cancha.jpg'); background-size: cover; background-position: center center;">
+            <div class="absolute inset-0 bg-black/70"></div>
+            
+            <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white uppercase leading-tight fade-in-up">
+                    El lujo de tu juego. <br class="hidden sm:inline"> La cancha perfecta te espera.
                 </h1>
-                <p class="mt-4 text-xl text-gray-300 max-w-2xl mx-auto">
-                    Fácil, rápido y sin llamadas. Encuentra tu horario ideal en cualquiera de nuestros complejos.
+                <p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto fade-in-up fade-in-delay-1">
+                    Reservá sin vueltas. Experimentá la comodidad, la adrenalina y el placer de un partido impecable en nuestros complejos de primer nivel.
                 </p>
-                <div class="mt-8">
-                    <button id="btn-reservar-hero" class="px-8 py-3 bg-blue-600 text-white rounded-md text-lg font-medium shadow-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                <div class="mt-10 fade-in-up fade-in-delay-2">
+                    <button id="btn-reservar-hero" class="px-12 py-4 bg-emerald-600 text-white rounded-full text-xl font-semibold shadow-custom-dark hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300 ease-in-out">
                         ¡Reservar Ahora!
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white py-16">
+        
+        <div class="bg-gray-950 py-20">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900">La mejor experiencia</h2>
-                    <p class="mt-3 text-lg text-gray-500">Todo lo que necesitas para un partido perfecto.</p>
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold text-white mb-4">RESERVÁ CON ESTILO. JUGÁ CON PASIÓN.</h2>
+                    <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+                        Nuestro sistema intuitivo está diseñado para que te olvides de las complicaciones y te concentres en lo que realmente importa: el juego.
+                    </p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mx-auto">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h3 class="mt-5 text-lg font-medium text-gray-900">Disponibilidad Real</h3>
-                        <p class="mt-2 text-base text-gray-500">Consulta los horarios libres en tiempo real y asegura tu lugar al instante.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    
+                    <div class="text-center p-8 bg-gray-900 rounded-xl shadow-xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="img/img-paso-1-pelota.jpg" alt="Explorá" class="w-full h-48 object-cover rounded-lg mb-6 border-2 border-gray-800">
+                        <h3 class="mt-5 text-2xl font-semibold text-gray-100">01. EXPLORÁ</h3>
+                        <p class="mt-3 text-base text-gray-400">Navegá por nuestros complejos y elegí la cancha que mejor se adapte a tu equipo. Desde Fútbol 5 hasta 11, tenemos lo tuyo.</p>
                     </div>
-                    <div class="text-center">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mx-auto">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg>
-                        </div>
-                        <h3 class="mt-5 text-lg font-medium text-gray-900">Multiples Complejos</h3>
-                        <p class="mt-2 text-base text-gray-500">Accede a todas nuestras sucursales desde un solo lugar. Fútbol 5, 7 y más.</p>
+                    
+                    <div class="text-center p-8 bg-gray-900 rounded-xl shadow-xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="img/img-paso-2-guantes.jpg" alt="Asegurá" class="w-full h-48 object-cover rounded-lg mb-6 border-2 border-gray-800">
+                        <h3 class="mt-5 text-2xl font-semibold text-gray-100">02. ASEGURÁ</h3>
+                        <p class="mt-3 text-base text-gray-400">Conocé la disponibilidad en tiempo real. Seleccioná tu horario y ¡listo! Tu reserva confirmada en segundos.</p>
                     </div>
-                    <div class="text-center">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mx-auto">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H7a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-                        </div>
-                        <h3 class="mt-5 text-lg font-medium text-gray-900">Pago Seguro</h3>
-                        <p class="mt-2 text-base text-gray-500">Paga tu reserva online de forma fácil y 100% segura (¡Próximamente!).</p>
+                    
+                    <div class="text-center p-8 bg-gray-900 rounded-xl shadow-xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="img/img-paso-3-dummies.jpg" alt="Disfrutá" class="w-full h-48 object-cover rounded-lg mb-6 border-2 border-gray-800">
+                        <h3 class="mt-5 text-2xl font-semibold text-gray-100">03. DISFRUTÁ</h3>
+                        <p class="mt-3 text-base text-gray-400">Solo preocupate por traer tus botines y las ganas de ganar. Nosotros nos encargamos del resto.</p>
                     </div>
+
                 </div>
             </div>
         </div>
+        
+        <div class="bg-gray-900 py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    
+                    <div class="text-center p-8 bg-gray-950 rounded-lg shadow-2xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 rounded-full bg-gray-800 mx-auto mb-4">
+                            <svg class="h-8 w-8 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-semibold text-gray-100">Disponibilidad Instantánea</h3>
+                        <p class="mt-2 text-base text-gray-400">Olvidate de llamar. Consulta y reserva tu horario al momento, con datos 100% actualizados.</p>
+                    </div>
+                    
+                    <div class="text-center p-8 bg-gray-950 rounded-lg shadow-2xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 rounded-full bg-gray-800 mx-auto mb-4">
+                            <svg class="h-8 w-8 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-semibold text-gray-100">Variedad Premium</h3>
+                        <p class="mt-2 text-base text-gray-400">Canchas de última generación para todas las modalidades. Césped sintético que te va a sorprender.</p>
+                    </div>
+                    
+                    <div class="text-center p-8 bg-gray-950 rounded-lg shadow-2xl border border-gray-800 transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="feature-icon flex items-center justify-center h-16 w-16 rounded-full bg-gray-800 mx-auto mb-4">
+                            <svg class="h-8 w-8 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H7a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                        </div>
+                        <h3 class="mt-5 text-xl font-semibold text-gray-100">Pago Flexible y Seguro</h3>
+                        <p class="mt-2 text-base text-gray-400">Próximamente: Aboná online con todos los medios de pago, de forma 100% protegida.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-950 py-20">
+            <div class="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center bg-gray-900 p-10 rounded-2xl shadow-custom-dark border border-gray-800">
+                <h2 class="text-4xl font-extrabold text-white sm:text-5xl leading-tight">
+                    <span class="block">¿Listo para un partidazo?</span>
+                    <span class="block text-emerald-500 mt-4">Tu cancha está a un click de distancia.</span>
+                </h2>
+                <p class="mt-6 text-lg leading-7 text-gray-300">
+                    No pierdas más tiempo coordinando. Convertite en el crack de la organización.
+                </p>
+                <button id="btn-reservar-cta" class="mt-10 w-full inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-medium rounded-full text-white bg-emerald-600 hover:bg-emerald-700 sm:w-auto disabled:bg-gray-600 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300 ease-in-out">
+                    Reservar mi cancha ahora
+                </button>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="bg-gray-800 text-gray-400">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+    <footer class="bg-gray-900 text-gray-400 border-t border-gray-800 py-12 mt-auto">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            
+            <div>
+                <h3 class="text-xl font-bold text-gray-100 mb-4">Complejo Deportivo</h3>
+                <p class="mb-4">Tu plataforma #1 para reservar canchas de fútbol. Calidad, comodidad y pasión por el deporte.</p>
+                <div class="flex space-x-4 mt-6">
+                    <a href="#" class="text-gray-400 hover:text-emerald-500 transition-colors duration-200"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.776-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.657 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-emerald-500 transition-colors duration-200"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.002 3.714.051 1.104.122 1.633.275 2.05.432.58.236.966.52 1.32.885.363.363.647.75.886 1.32.158.417.31.946.433 2.05.049.93.051 1.286.051 3.715s-.002 2.784-.051 3.714c-.122 1.104-.275 1.633-.432 2.05-.236.58-.52 0-.885 1.32-.363.363-.75.647-1.32.886-.417.158-.946.31-2.05.433-.93.049-1.286.051-3.715.051s-2.784-.002-3.714-.051c-1.104-.122-1.633-.275-2.05-.432-.58-.236-.966.52-1.32-.885-.363.363-.647-.75-.886-1.32-.158-.417-.31-.946.433 2.05-.049-.93-.051-1.286-.051-3.715s.002-2.784.051-3.714c.122-1.104.275-1.633.432 2.05.236-.58.52-.966.885-1.32.363.363.75-.647 1.32-.886.417-.158.946-.31 2.05-.433.93-.049 1.286.051 3.715-.051zM12 4.419c-2.86 0-3.25.01-4.38.06-1.07.124-1.61.277-1.95.408-.43.167-.704.37-1.002.668-.298.298-.5.572-.667 1.002-.13.34-.284.88-.408 1.95-.05.93-.06 1.32-.06 4.38s.01 3.25.06 4.38c.124 1.07.277 1.61.408 1.95.167.43.37.704.668 1.002.298.298.572.5.952.667.34.13 1.01.284 1.94.408 1.13.05 4.09.06 4.38.06s3.25-.01 4.38-.06c1.07-.124 1.61-.277 1.95-.408.43-.167.704-.37 1.002-.668.298-.298-.5-.572-.667 1.002.13-.34.284-.88.408-1.95.05-.93.06-1.32.06-4.38s-.01-3.25-.06-4.38c-.124-1.07-.277-1.61-.408-1.95-.167-.43-.37-.704-.668-1.002-.298-.298-.572-.5-.952-.667-.34-.13-1.01-.284-1.94-.408-.05-.93-.06-1.32-.06-4.38zm-1.82 7.78a3.61 3.61 0 100-7.22 3.61 3.61 0 000 7.22zM12 6.8c-2.09 0-3.8 1.71-3.8 3.8s1.71 3.8 3.8 3.8 3.8-1.71 3.8-3.8-1.71-3.8-3.8-3.8z" clip-rule="evenodd" /></svg></a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Navegación Rápida</h3>
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="hover:text-emerald-500 transition-colors duration-200">Inicio</a></li>
+                    <li><a href="reservar.html" class="hover:text-emerald-500 transition-colors duration-200">Reservar Ahora</a></li>
+                    <li><a href="perfil.html" class="hover:text-emerald-500 transition-colors duration-200">Mi Perfil</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Contáctanos</h3>
+                <p class="mb-2">Email: <a href="mailto:info@complejodeportivo.com" class="hover:text-emerald-500 transition-colors duration-200">info@complejodeportivo.com</a></p>
+                <p>Teléfono: <a href="tel:+541155551234" class="hover:text-emerald-500 transition-colors duration-200">+54 11 5555-1234</a></p>
+                <p class="mt-4">Dirección: Av. Siempre Viva 742, Buenos Aires, Argentina</p>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-semibold text-gray-100 mb-4">Información Legal</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Términos y Condiciones</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Política de Privacidad</a></li>
+                    <li><a href="#" class="hover:text-emerald-500 transition-colors duration-200">Mapa del Sitio</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
             <p>&copy; 2025 Complejo Deportivo. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script src="auth.js"></script>
-
     <script>
-        // --- Lógica del Header (UI) ---
+        // ... (código JS sin cambios) ...
         function actualizarUIporLogin() {
             const btnReservarNav = document.getElementById('btn-reservar');
             const btnReservarHero = document.getElementById('btn-reservar-hero');
+            const btnReservarCta = document.getElementById('btn-reservar-cta');
+            
             const linksLoggedOut = document.getElementById('auth-links-logged-out');
             const linksLoggedIn = document.getElementById('auth-links-logged-in');
             const userEmailDisplay = document.getElementById('user-email-display');
 
-            // Usamos las funciones de auth.js
             const usuario = AuthService.getUserData();
+            const esCliente = AuthService.isLoggedIn() && usuario.rol === 'Cliente';
 
-            if (AuthService.isLoggedIn() && usuario.rol === 'Cliente') {
-                // --- Cliente Logueado ---
+            [btnReservarNav, btnReservarHero, btnReservarCta].forEach(btn => {
+                if (btn) {
+                    btn.disabled = !esCliente;
+                    if (esCliente) {
+                        btn.onclick = () => window.location.href = 'reservar.html';
+                    }
+                }
+            });
+
+            if (esCliente) {
                 linksLoggedOut.classList.add('hidden');
                 linksLoggedIn.classList.remove('hidden');
                 userEmailDisplay.textContent = usuario.email;
-                
-                btnReservarNav.disabled = false;
-                btnReservarHero.disabled = false;
-                
             } else {
-                // --- No Logueado (o Empleado) ---
                 linksLoggedOut.classList.remove('hidden');
                 linksLoggedIn.classList.add('hidden');
-                btnReservarNav.disabled = true;
-                btnReservarNav.title = "Debes iniciar sesión para reservar";
-                btnReservarHero.disabled = true;
                 
+                let title = "Debes iniciar sesión como cliente para reservar";
                 if (AuthService.isLoggedIn() && usuario.rol !== 'Cliente') {
-                     btnReservarNav.title = "Eres un empleado, no puedes reservar.";
-                } else {
-                     btnReservarNav.title = "Debes iniciar sesión para reservar";
-                     // Opcional: llevarlo directo al login
-                     btnReservarHero.addEventListener('click', () => window.location.href = 'login.html');
-                     btnReservarNav.addEventListener('click', () => window.location.href = 'login.html');
+                     title = "Eres un empleado, no puedes reservar desde aquí.";
                 }
+
+                [btnReservarNav, btnReservarHero, btnReservarCta].forEach(btn => {
+                    if (btn) {
+                        btn.title = title;
+                        if (!AuthService.isLoggedIn()) {
+                            btn.onclick = () => window.location.href = 'login.html';
+                            btn.disabled = false;
+                        }
+                    }
+                });
             }
         }
 
-        // --- Punto de Entrada ---
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Inicializa la autenticación (lee localStorage, etc.)
             actualizarUIporLogin();
-
-            // 2. Listeners para los botones de reservar
-            document.getElementById('btn-reservar').addEventListener('click', () => {
-                window.location.href = 'reservar.html';
-            });
-            document.getElementById('btn-reservar-hero').addEventListener('click', () => {
-                window.location.href = 'reservar.html';
-            });
             
-            // 3. Listeners del header (Menú de usuario y Logout)
-            document.getElementById('btn-logout').addEventListener('click', AuthService.logout); // <-- Usa AuthService
-            document.getElementById('btn-user-menu').addEventListener('click', () => {
+            document.getElementById('btn-logout')?.addEventListener('click', AuthService.logout);
+            document.getElementById('btn-user-menu')?.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita que el window.click se dispare
                 document.getElementById('user-menu-dropdown').classList.toggle('hidden');
             });
-        });
 
+            window.addEventListener('click', function(e) {
+                const userMenuDropdown = document.getElementById('user-menu-dropdown');
+                const btnUserMenu = document.getElementById('btn-user-menu');
+                
+                if (userMenuDropdown && !userMenuDropdown.classList.contains('hidden')) {
+                    if (!btnUserMenu.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+                        userMenuDropdown.classList.add('hidden');
+                    }
+                }
+            });
+        });
     </script>
 
 </body>

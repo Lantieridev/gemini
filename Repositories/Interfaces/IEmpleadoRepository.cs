@@ -4,7 +4,7 @@ namespace complejoDeportivo.Repositories.Interfaces
 {
     public interface IEmpleadoRepository
     {
-        Task<IEnumerable<Empleado>> GetAllAsync();
+        Task<IEnumerable<Empleado>> GetAllAsync(string? searchTerm = null);
         Task<Empleado?> GetByIdAsync(int id);
         Task<Empleado> CreateAsync(Empleado empleado);
         Task<bool> UpdateAsync(Empleado empleado);

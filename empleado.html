@@ -292,7 +292,13 @@
                 </div>
 
                 <div role="tabpanel" id="panel-equipo" class="hidden">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Directorio de Equipo</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-700">Directorio de Equipo</h2>
+                        <div class="w-full max-w-xs">
+                            <label for="search-equipo" class="sr-only">Buscar empleado</label>
+                            <input type="search" id="search-equipo" placeholder="Buscar por nombre, apellido, rol..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                        </div>
+                        </div>
                     <div class="bg-white shadow rounded-lg overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -310,7 +316,13 @@
                 </div>
 
                 <div role="tabpanel" id="panel-sucursales" class="hidden">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Otras Sucursales</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-700">Otras Sucursales</h2>
+                        <div class="w-full max-w-xs">
+                             <label for="search-sucursales" class="sr-only">Buscar sucursal</label>
+                            <input type="search" id="search-sucursales" placeholder="Buscar por nombre o ciudad..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                        </div>
+                        </div>
                     <div class="bg-white shadow rounded-lg overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -463,6 +475,33 @@
                     handleToggleEstadoCancha(button); 
                 }
             });
+            
+            // ===== INICIO LISTENERS BUSCADORES =====
+            const searchEquipoInput = document.getElementById('search-equipo');
+            searchEquipoInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    cargarDatosEquipo(searchEquipoInput.value);
+                }
+            });
+            // También filtra si borra el texto
+            searchEquipoInput.addEventListener('search', (e) => {
+                if (!e.target.value) {
+                    cargarDatosEquipo();
+                }
+            });
+
+            const searchSucursalesInput = document.getElementById('search-sucursales');
+            searchSucursalesInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    cargarDatosSucursales(searchSucursalesInput.value);
+                }
+            });
+            searchSucursalesInput.addEventListener('search', (e) => {
+                 if (!e.target.value) {
+                    cargarDatosSucursales();
+                }
+            });
+            // ===== FIN LISTENERS BUSCADORES =====
             
             // Listeners para los modales
             const modalConfirm = document.getElementById('modal-confirmacion');
@@ -827,13 +866,26 @@
         }
 
         // --- PESTAÑA 3: EQUIPO ---
-        async function cargarDatosEquipo() {
+        async function cargarDatosEquipo(searchTerm = "") {
             const listaElement = document.getElementById('lista-equipo');
             listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
             
+            // ===== MODIFICACIÓN BUSCADOR =====
+            let endpoint = `/admin/empleados`;
+            if (searchTerm) {
+                endpoint += `?searchTerm=${encodeURIComponent(searchTerm)}`;
+            }
+            // =================================
+            
             try {
-                const data = await apiFetch(`/admin/empleados`); 
+                const data = await apiFetch(endpoint); 
                 listaElement.innerHTML = '';
+
+                if (data.length === 0) {
+                    listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No se encontraron empleados.</td></tr>`;
+                    return;
+                }
+
                 data.forEach(empleado => {
                     listaElement.innerHTML += `
                         <tr>
@@ -852,13 +904,26 @@
         }
 
         // --- PESTAÑA 4: SUCURSALES ---
-        async function cargarDatosSucursales() {
+        async function cargarDatosSucursales(searchTerm = "") {
             const listaElement = document.getElementById('lista-sucursales');
             listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
 
+            // ===== MODIFICACIÓN BUSCADOR =====
+            let endpoint = `/admin/complejos`;
+            if (searchTerm) {
+                endpoint += `?searchTerm=${encodeURIComponent(searchTerm)}`;
+            }
+            // =================================
+
             try {
-                const data = await apiFetch(`/admin/complejos`); 
+                const data = await apiFetch(endpoint); 
                 listaElement.innerHTML = '';
+
+                if (data.length === 0) {
+                    listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">No se encontraron sucursales.</td></tr>`;
+                    return;
+                }
+                
                 data.forEach(complejo => {
                     listaElement.innerHTML += `
                         <tr>

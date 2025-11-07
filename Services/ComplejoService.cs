@@ -32,9 +32,9 @@ namespace complejoDeportivo.Services.Implementations
             };
         }
 
-        public async Task<IEnumerable<ComplejoDetalleDTO>> GetAllAsync()
+        public async Task<IEnumerable<ComplejoDetalleDTO>> GetAllAsync(string? searchTerm = null)
         {
-            var complejos = await _complejoRepo.GetAllAsync();
+            var complejos = await _complejoRepo.GetAllAsync(searchTerm);
             return complejos.Select(MapToDTO);
         }
 
@@ -65,10 +65,10 @@ namespace complejoDeportivo.Services.Implementations
             };
 
             var nuevoComplejo = await _complejoRepo.CreateAsync(complejo, direccion);
-            
+
             // Recargamos el objeto con la dirección incluida para el DTO
-            nuevoComplejo.Direccion = direccion; 
-            
+            nuevoComplejo.Direccion = direccion;
+
             return MapToDTO(nuevoComplejo);
         }
 

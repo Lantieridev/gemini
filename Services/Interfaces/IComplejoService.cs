@@ -4,7 +4,7 @@ namespace complejoDeportivo.Services.Interfaces
 {
     public interface IComplejoService
     {
-        Task<IEnumerable<ComplejoDetalleDTO>> GetAllAsync();
+        Task<IEnumerable<ComplejoDetalleDTO>> GetAllAsync(string? searchTerm = null);
         Task<ComplejoDetalleDTO> GetByIdAsync(int id);
         Task<ComplejoDetalleDTO> CreateAsync(CrearComplejoDTO createDto);
         Task UpdateAsync(int id, ActualizarComplejoDTO updateDto);

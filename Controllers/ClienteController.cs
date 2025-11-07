@@ -95,6 +95,14 @@ namespace complejoDeportivo.Controllers
         [Authorize] // <-- AHORA PERMITE CLIENTES (con validación)
         public async Task<IActionResult> Update(int id, [FromBody] ActualizarClienteDTO updateDto)
         {
+            // --- INICIO DE LA CORRECCIÓN (BUENA PRÁCTICA) ---
+            // Validar que el modelo (DTO) sea correcto
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            // --- FIN DE LA CORRECCIÓN ---
+
             // --- VALIDACIÓN DE CLIENTE ---
             if (!await EsClienteValido(id))
             {
