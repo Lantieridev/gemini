@@ -53,7 +53,9 @@
                             </svg>
                         </button>
                         <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mis Reservas</a>
+                            
+                            <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mi Perfil / Reservas</a>
+                            
                             <button id="btn-logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cerrar Sesión</button>
                         </div>
                     </div>
@@ -161,16 +163,12 @@
             }
         }
 
-        // --- Lógica del Modal de Reserva ---
-        // *** TODA LA LÓGICA DEL MODAL HA SIDO MOVIDA A reservar.html ***
-
         // --- Punto de Entrada ---
         document.addEventListener('DOMContentLoaded', () => {
             // 1. Inicializa la autenticación (lee localStorage, etc.)
             actualizarUIporLogin();
 
             // 2. Listeners para los botones de reservar
-            // *** MODIFICADO: Ahora redirigen a la nueva página ***
             document.getElementById('btn-reservar').addEventListener('click', () => {
                 window.location.href = 'reservar.html';
             });
@@ -183,12 +181,6 @@
             document.getElementById('btn-user-menu').addEventListener('click', () => {
                 document.getElementById('user-menu-dropdown').classList.toggle('hidden');
             });
-            
-            // 4. Listeners del modal
-            // *** ELIMINADOS ***
-
-            // 5. Listeners del wizard
-            // *** ELIMINADOS ***
         });
 
     </script>

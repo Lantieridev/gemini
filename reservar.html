@@ -165,8 +165,15 @@
             if (panelIdToHide > 0) {
                 paneles[panelIdToHide - 1].classList.add('hidden');
             }
-            document.getElementById('reserva-resultado-exito').classList.add('hidden');
-            document.getElementById('reserva-resultado-error').classList.add('hidden');
+            
+            // --- INICIO DE LA CORRECCIÓN ---
+            // Oculta los mensajes de resultado solo si NO estamos yendo al panel 4
+            if (panelIdToShow !== 4) {
+                document.getElementById('reserva-resultado-exito').classList.add('hidden');
+                document.getElementById('reserva-resultado-error').classList.add('hidden');
+            }
+            // --- FIN DE LA CORRECCIÓN ---
+            
             paneles[panelIdToShow - 1].classList.remove('hidden');
         }
 

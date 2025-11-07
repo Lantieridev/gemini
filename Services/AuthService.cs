@@ -37,7 +37,8 @@ namespace complejoDeportivo.Services.Implementations
             {
                 Email = usuario.Email,
                 Token = token,
-                Rol = rol
+                Rol = rol,
+                ClienteId = usuario.ClienteId
             };
         }
 
