@@ -1,4 +1,6 @@
 using complejoDeportivo.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace complejoDeportivo.Services.Interfaces
 {
@@ -11,5 +13,6 @@ namespace complejoDeportivo.Services.Interfaces
 		Task DeleteAsync(int id);
 		Task ActivarAsync(int id);
 		Task DesactivarAsync(int id);
-	}
+        Task<IEnumerable<CanchaDTO>> GetCanchasByComplejoAsync(int complejoId);
+    }
 }

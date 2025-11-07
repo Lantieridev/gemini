@@ -107,5 +107,12 @@ namespace complejoDeportivo.Controllers
 				return NotFound(new { message = ex.Message });
 			}
 		}
-	}
+        [HttpGet("complejo/{complejoId}")]
+        // No necesita [Authorize] porque ya está a nivel de controlador
+        public async Task<ActionResult<IEnumerable<CanchaDTO>>> GetByComplejoId(int complejoId)
+        {
+            var canchas = await _CanchaService.GetCanchasByComplejoAsync(complejoId);
+            return Ok(canchas);
+        }
+    }
 }

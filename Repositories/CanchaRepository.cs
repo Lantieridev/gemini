@@ -1,6 +1,7 @@
 using complejoDeportivo.Models;
 using complejoDeportivo.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace complejoDeportivo.Repositories.Implementations
 {
@@ -78,5 +79,12 @@ namespace complejoDeportivo.Repositories.Implementations
 			await _context.SaveChangesAsync();
 			return true;
 		}
-	}
+        // [NUEVO] (Problema 4)
+        public async Task<IEnumerable<Cancha>> GetByComplejoIdAsync(int complejoId)
+        {
+            return await _context.Canchas
+                .Where(c => c.ComplejoId == complejoId)
+                .ToListAsync();
+        }
+    }
 }

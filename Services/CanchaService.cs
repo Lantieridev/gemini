@@ -86,5 +86,11 @@ namespace complejoDeportivo.Services.Implementations
 				throw new NotFoundException($"Cancha con ID {id} no encontrado.");
 			}
 		}
-	}
+        public async Task<IEnumerable<CanchaDTO>> GetCanchasByComplejoAsync(int complejoId)
+        {
+            var canchas = await _repository.GetByComplejoIdAsync(complejoId);
+            // Mapeamos la lista de entidades a una lista de DTOs
+            return canchas.Select(c => new CanchaDTO(c));
+        }
+    }
 }

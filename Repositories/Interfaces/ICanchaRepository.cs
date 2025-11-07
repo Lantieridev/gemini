@@ -10,8 +10,11 @@ namespace complejoDeportivo.Repositories.Interfaces
         Task<Cancha> GetByIdAsync(int id);
         Task<Cancha> CreateAsync(Cancha Cancha);
         Task<bool> UpdateAsync(Cancha Cancha);
-		Task<bool> DeleteAsync(int id);
-		Task<bool> ActivarAsync(int id);
-		Task<bool> DesactivarAsync(int id);
+        Task<bool> DeleteAsync(int id);
+        Task<bool> ActivarAsync(int id);
+        Task<bool> DesactivarAsync(int id);
+
+        // [NUEVO] (Problema 4)
+        Task<IEnumerable<Cancha>> GetByComplejoIdAsync(int complejoId);
     }
 }
