@@ -16,9 +16,12 @@
 
         // PROPIEDADES CALCULADAS PARA EL FRONTEND
         public string FechaDisplay => Fecha.ToString("dd/MM/yyyy");
-        public string HorarioDisplay => $"{HoraInicio:hh\\:mm} - {HoraInicio:hh\\:mm}";
+
+        // --- AQUÍ ESTÁ LA CORRECCIÓN ---
+        public string HorarioDisplay => $"{HoraInicio:hh\\:mm} - {HoraFin:hh\\:mm}";
+
         public string TotalDisplay => $"${Total:N0}";
-        public string DuracionDisplay => $"{(HoraFin - HoraInicio).Hours}h";
+        public string DuracionDisplay => $"{(HoraFin - HoraInicio).TotalHours}h"; // Corregido a TotalHours por si son más de 1h
 
         public string EstadoColor => Estado.ToLower() switch
         {

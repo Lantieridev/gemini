@@ -22,7 +22,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: corsPolicyName,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000", "http://127.0.0.1:5500")
+                          // --- AQUÍ ESTÁ LA CORRECCIÓN ---
+                          // Agregamos el puerto 5501 de tu Live Server
+                          policy.WithOrigins("http://localhost:3000",
+                                             "http://127.0.0.1:5500",
+                                             "http://127.0.0.1:5501") // <--- ESTA LÍNEA ES NUEVA
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                       });

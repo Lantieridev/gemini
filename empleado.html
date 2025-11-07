@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Empleado (Conectado)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Estilos para la fuente Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilos para la pestaña activa */
+        .tab-button.active {
+            border-bottom-color: #3B82F6; /* blue-500 */
+            color: #3B82F6; /* blue-500 */
+            font-weight: 600;
+        }
+        /* Estilo para pestaña deshabilitada */
+        .tab-button:disabled {
+            color: #9CA3AF; /* gray-400 */
+            cursor: not-allowed;
+        }
+        /* Estilo para el loader (spinner) */
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-100 text-gray-900">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="mb-6 flex flex-col md:flex-row justify-between md:items-center">
+            <h1 class="text-3xl font-bold text-gray-800">Panel de Empleado</h1>
+            <div class="mt-2 md:mt-0 text-sm text-gray-600">
+                Bienvenido, <span id="nombre-usuario" class="font-medium">Usuario</span> (<span id="rol-usuario">Empleado</span>)
+            </div>
+        </header>
+
+        <div>
+            <div class="border-b border-gray-300">
+                <nav class="-mb-px flex space-x-6" role="tablist">
+                    <button role="tab" aria-selected="true" id="tab-dashboard" class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Dashboard
+                    </button>
+                    <button role="tab" aria-selected="false" id="tab-gestion" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Gestión
+                    </button>
+                    <button role="tab" aria-selected="false" id="tab-equipo" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Equipo
+                    </button>
+                    <button role="tab" aria-selected="false" id="tab-sucursales" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Sucursales
+                    </button>
+                    <button role="tab" aria-selected="false" id="tab-kiosko" class="tab-button" title="Próximamente" disabled>
+                        Kiosko/Stock
+                    </button>
+                </nav>
+            </div>
+
+            <div class="mt-6">
+
+                <div role="tabpanel" id="panel-dashboard">
+                    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="filtro-complejo" class="block text-sm font-medium text-gray-700">Complejo</label>
+                            <select id="filtro-complejo" name="complejo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <option value="1">Complejo Central</option>
+                                <option value="2">Complejo Zona Norte</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label for="filtro-rango-fechas" class="block text-sm font-medium text-gray-700">Rango de Fechas</label>
+                            <select id="filtro-rango-fechas" name="rango-fechas" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <option value="hoy">Hoy</option>
+                                <option value="ayer">Ayer</option>
+                                <option value="ultimos_7_dias" selected>Últimos 7 días</option>
+                                <option value="ultimos_30_dias">Últimos 30 días</option>
+                                <option value="este_mes">Este Mes</option>
+                                <option value="mes_pasado">Mes Pasado</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn-aplicar-filtros" class="mt-1 md:mt-6 w-full md:w-auto rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                            Aplicar
+                        </button>
+                    </div>
+
+                    <div id="dashboard-loader" class="hidden text-center p-8">
+                        <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mx-auto"></div>
+                        <p class="mt-4 text-gray-600">Cargando datos del dashboard...</p>
+                    </div>
+                    <div id="dashboard-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
+                        <strong class="font-bold">Error:</strong>
+                        <span class="block sm:inline" id="dashboard-error-mensaje"></span>
+                    </div>
+
+                    <div id="dashboard-content" class="hidden">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-3">Resumen de Hoy</h2>
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c-1.11 0-2.08-.402-2.599-1M12 16v1m0-1v-8" /></svg>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Ingresos Hoy</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="kpi-ingresos-hoy">$0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Reservas Hoy</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900" id="kpi-reservas-hoy">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-100 border border-yellow-300 overflow-hidden shadow rounded-lg">
+                                <div class="p-5">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-yellow-600 truncate">Reservas Pendientes (Filtro)</dt>
+                                                <dd class="text-3xl font-semibold text-yellow-900" id="kpi-pendientes">0</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">Rendimiento del Período</h2>
+                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                            
+                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Ingresos por Período</h3>
+                                <div class="w-full h-64">
+                                    <canvas id="grafico-ingresos"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Estados de Reservas</h3>
+                                <div class="w-full h-64 flex items-center justify-center">
+                                    <canvas id="grafico-estados"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">Actividad Reciente</h2>
+                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Últimas Reservas</h3>
+                                <ul class="divide-y divide-gray-200" id="lista-reservas-recientes">
+                                    <li class="py-3 text-center text-gray-500">Cargando...</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-lg shadow">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Canchas Populares (según filtro)</h3>
+                                <ul class="divide-y divide-gray-200" id="lista-canchas-populares">
+                                    <li class="py-3 text-center text-gray-500">Cargando...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div role="tabpanel" id="panel-gestion" class="hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Gestión de Canchas</h2>
+                            
+                            <form id="form-gestion-cancha" class="bg-white p-6 rounded-lg shadow mb-6">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Crear Nueva Cancha</h3>
+                                <div id="form-cancha-mensaje" class="hidden mb-4 p-3 rounded-md"></div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="cancha-nombre" class="block text-sm font-medium text-gray-700">Nombre Cancha</label>
+                                        <input type="text" id="cancha-nombre" required placeholder="Ej: Cancha Fútbol 5 (A)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="cancha-tipo" class="block text-sm font-medium text-gray-700">Tipo de Cancha</label>
+                                        <select id="cancha-tipo" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                            <option value="">Cargando tipos...</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="cancha-superficie" class="block text-sm font-medium text-gray-700">Tipo de Superficie</label>
+                                        <select id="cancha-superficie" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                            <option value="1">Césped Sintético</option>
+                                            <option value="2">Cemento</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="w-full rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                                        Guardar Cancha
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="bg-white shadow rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-gestion-canchas" class="bg-white divide-y divide-gray-200">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Gestión de Tipos de Cancha</h2>
+                            
+                            <form id="form-gestion-tipo-cancha" class="bg-white p-6 rounded-lg shadow mb-6">
+                                <h3 class="text-base font-semibold text-gray-900 mb-4">Crear Nuevo Tipo</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="tipo-nombre" class="block text-sm font-medium text-gray-700">Nombre del Tipo</label>
+                                        <input type="text" id="tipo-nombre" placeholder="Ej: Tenis (Polvo de ladrillo)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    </div>
+                                    <button type="submit" class="w-full rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+                                        Guardar Tipo
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="bg-white shadow rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre Tipo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lista-gestion-tipos-cancha" class="bg-white divide-y divide-gray-200">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div role="tabpanel" id="panel-equipo" class="hidden">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Directorio de Equipo</h2>
+                    <div class="bg-white shadow rounded-lg overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-equipo" class="bg-white divide-y divide-gray-200">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div role="tabpanel" id="panel-sucursales" class="hidden">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Otras Sucursales</h2>
+                    <div class="bg-white shadow rounded-lg overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre Sucursal</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-sucursales" class="bg-white divide-y divide-gray-200">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div role="tabpanel" id="panel-kiosko" class="hidden">
+                    </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Variables Globales ---
+        let graficoIngresosInstance = null;
+        let graficoEstadosInstance = null;
+        
+        // USA LA URL DE TU launchSettings.json [https]
+        const API_BASE_URL = "http://localhost:5026/api"; 
+
+        // IMPORTANTE: Pega aquí el token JWT que obtuviste de /api/auth/login
+        // Lo saqué de tu log de error para que funcione de una.
+        const JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5IiwiZW1haWwiOiJmcmFuY29AZ29tZXouY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NjI1MjQ4OTUsImlzcyI6Imh0dHBzOi8vYXBpLmNvbXBsZWpvZGVwb3J0aXZvLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXBpLmNvbXBsZWpvZGVwb3J0aXZvLmNvbSJ9.b6D0binygVyBwxFhXOKLB45XeVCZpINaJhA5NxclCeY";
+
+        // Headers para todas las peticiones fetch
+        const AUTH_HEADERS = {
+            'Authorization': `Bearer ${JWT_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+
+        // --- Formateadores (Helpers) ---
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('es-AR', {
+                style: 'currency',
+                currency: 'ARS',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        };
+
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        };
+        
+        // --- Lógica de Pestañas ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-button');
+            const panels = document.querySelectorAll('[role="tabpanel"]');
+
+            tabs.forEach(tab => {
+                if (tab.disabled) return; 
+                
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    panels.forEach(p => {
+                        p.classList.add('hidden');
+                    });
+
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+
+                    const panelId = tab.id.replace('tab-', 'panel-');
+                    const panel = document.getElementById(panelId);
+                    if (panel) {
+                        panel.classList.remove('hidden');
+                    }
+
+                    // --- Carga de datos al cambiar de pestaña ---
+                    // Carga los datos solo la primera vez que se hace clic
+                    if (panelId === 'panel-dashboard' && !panel.dataset.loaded) {
+                        cargarDatosDashboard();
+                    } else if (panelId === 'panel-gestion' && !panel.dataset.loaded) {
+                        cargarDatosGestion();
+                    } else if (panelId === 'panel-equipo' && !panel.dataset.loaded) {
+                        cargarDatosEquipo();
+                    } else if (panelId === 'panel-sucursales' && !panel.dataset.loaded) {
+                        cargarDatosSucursales();
+                    }
+                    panel.dataset.loaded = true; // Marcar como cargado
+                });
+            });
+
+            // Carga inicial de la pestaña de dashboard
+            document.getElementById('panel-dashboard').dataset.loaded = true;
+            cargarDatosDashboard();
+
+            // Listener para el botón de filtros del dashboard
+            document.getElementById('btn-aplicar-filtros').addEventListener('click', cargarDatosDashboard);
+
+            // Listener para el formulario de crear cancha
+            document.getElementById('form-gestion-cancha').addEventListener('submit', crearCancha);
+        });
+
+        // --- Lógica de Petición (Fetch) Genérica ---
+        async function apiFetch(endpoint) {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                headers: AUTH_HEADERS
+            });
+            
+            if (!response.ok) {
+                const errorTexto = await response.text();
+                console.error(`Error en ${endpoint}:`, errorTexto);
+                throw new Error(`Error ${response.status} en ${endpoint}`);
+            }
+            return await response.json();
+        }
+
+        // --- PESTAÑA 1: DASHBOARD ---
+        async function cargarDatosDashboard() {
+            const complejoId = document.getElementById('filtro-complejo').value;
+            const periodo = document.getElementById('filtro-rango-fechas').value;
+            
+            // Construye el query string EXACTAMENTE como lo espera FiltrosDashboardDto.cs
+            const queryString = `?ComplejoId=${complejoId}&PeriodoPredefinido=${periodo}`;
+
+            // Mostrar loader y ocultar contenido/error
+            document.getElementById('dashboard-loader').classList.remove('hidden');
+            document.getElementById('dashboard-content').classList.add('hidden');
+            document.getElementById('dashboard-error').classList.add('hidden');
+
+            try {
+                const data = await apiFetch(`/dashboard${queryString}`);
+
+                // 1. Actualizar KPIs (usa los datos del JSON)
+                actualizarKPIs(data.resumen);
+
+                // 2. Actualizar Gráficos (usa los datos del JSON)
+                crearGraficoIngresos(data.ingresosPorPeriodo);
+                crearGraficoEstados(data.estadosDeReservas);
+
+                // 3. Actualizar Listas (usa los datos del JSON)
+                actualizarListaReservas(data.reservasRecientes);
+                actualizarListaCanchas(data.canchasPopulares);
+
+                // Mostrar contenido y ocultar loader
+                document.getElementById('dashboard-content').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error al cargar dashboard:", error);
+                document.getElementById('dashboard-error-mensaje').textContent = error.message;
+                document.getElementById('dashboard-error').classList.remove('hidden');
+            } finally {
+                document.getElementById('dashboard-loader').classList.add('hidden');
+            }
+        }
+
+        function actualizarKPIs(resumen) {
+            document.getElementById('kpi-ingresos-hoy').textContent = formatCurrency(resumen.ingresosHoy);
+            document.getElementById('kpi-reservas-hoy').textContent = resumen.reservasHoy;
+            document.getElementById('kpi-pendientes').textContent = resumen.reservasPendientes;
+        }
+
+        function crearGraficoIngresos(ingresosData) {
+            const ctx = document.getElementById('grafico-ingresos').getContext('2d');
+            
+            if (graficoIngresosInstance) {
+                graficoIngresosInstance.destroy();
+            }
+
+            graficoIngresosInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ingresosData.map(d => d.periodo), // 'periodo' (ej: '01/11')
+                    datasets: [{
+                        label: 'Ingresos',
+                        data: ingresosData.map(d => d.total), // 'total'
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { callback: (value) => formatCurrency(value) } } },
+                    plugins: { tooltip: { callbacks: { label: (context) => formatCurrency(context.parsed.y) } } }
+                }
+            });
+        }
+
+        function crearGraficoEstados(estadosData) {
+            const ctx = document.getElementById('grafico-estados').getContext('2d');
+            
+            if (graficoEstadosInstance) {
+                graficoEstadosInstance.destroy();
+            }
+
+            graficoEstadosInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: estadosData.map(e => e.estado), // 'estado' (ej: 'Confirmada')
+                    datasets: [{
+                        data: estadosData.map(e => e.cantidad), // 'cantidad'
+                        backgroundColor: estadosData.map(e => e.color), // ¡Usamos el color de la API!
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        function actualizarListaReservas(reservas) {
+            const listaElement = document.getElementById('lista-reservas-recientes');
+            listaElement.innerHTML = ''; 
+
+            if (reservas.length === 0) {
+                listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay reservas recientes.</li>';
+                return;
+            }
+
+            reservas.forEach(reserva => {
+                // Usamos la lógica de clases de Tailwind basada en el estado
+                const estadoLower = reserva.estado.toLowerCase();
+                let estadoColor = 'bg-gray-100 text-gray-800';
+                if (estadoLower.includes('confirmada')) {
+                    estadoColor = 'bg-green-100 text-green-800';
+                } else if (estadoLower.includes('pendiente')) {
+                    estadoColor = 'bg-yellow-100 text-yellow-800';
+                } else if (estadoLower.includes('cancelada')) {
+                    estadoColor = 'bg-red-100 text-red-800';
+                }
+
+                const item = `
+                    <li class="py-3 flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${reserva.clienteNombre} - ${reserva.canchaNombre}</p>
+                            <p class="text-sm text-gray-500">${reserva.fechaDisplay} (${reserva.horarioDisplay})</p>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estadoColor}">
+                            ${reserva.estado}
+                        </span>
+                    </li>
+                `;
+                listaElement.innerHTML += item;
+            });
+        }
+
+        function actualizarListaCanchas(canchas) {
+            const listaElement = document.getElementById('lista-canchas-populares');
+            listaElement.innerHTML = ''; 
+
+            if (canchas.length === 0) {
+                listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay datos de canchas.</li>';
+                return;
+            }
+
+            canchas.forEach(cancha => {
+                const item = `
+                    <li class="py-3 flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${cancha.posicionDisplay} ${cancha.nombre}</p>
+                            <p class="text-sm text-gray-500">${cancha.tipoCancha}</p>
+                        </div>
+                        <p class="text-sm text-gray-700 font-medium">${cancha.reservasCount} Reservas</p>
+                    </li>
+                `;
+                listaElement.innerHTML += item;
+            });
+        }
+
+        // --- PESTAÑA 2: GESTIÓN ---
+        async function cargarDatosGestion() {
+            // Carga las dos listas (Tipos de Cancha y Canchas) en paralelo
+            const complejoId = document.getElementById('filtro-complejo').value;
+            
+            try {
+                const [tiposData, canchasData] = await Promise.all([
+                    apiFetch(`/tiposcancha`),               // Llama a GET /api/tiposcancha
+                    apiFetch(`/cancha/complejo/${complejoId}`) // Llama a GET /api/cancha/complejo/{id}
+                ]);
+
+                // 1. Poblar el dropdown
+                const selectTipo = document.getElementById('cancha-tipo');
+                selectTipo.innerHTML = '<option value="">Seleccione un tipo</option>';
+                tiposData.forEach(tipo => {
+                    selectTipo.innerHTML += `<option value="${tipo.tipoCanchaID}">${tipo.nombre}</option>`;
+                });
+
+                // 2. Poblar la tabla de canchas
+                const listaCanchas = document.getElementById('lista-gestion-canchas');
+                listaCanchas.innerHTML = '';
+                canchasData.forEach(cancha => {
+                    const estadoClass = cancha.activa ? "text-green-600" : "text-red-600";
+                    const estadoTexto = cancha.activa ? "Activa" : "Inactiva";
+                    listaCanchas.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">${cancha.nombre}</td>
+                            <td class="px-6 py-4 text-sm font-semibold ${estadoClass}">${estadoTexto}</td>
+                            <td class="px-6 py-4 text-sm font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-900">Editar</a>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // 3. (Simulado) Poblar la tabla de tipos
+                const listaTipos = document.getElementById('lista-gestion-tipos-cancha');
+                listaTipos.innerHTML = '';
+                tiposData.forEach(tipo => {
+                    listaTipos.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-500">${tipo.tipoCanchaID}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">${tipo.nombre}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Error al cargar datos de gestión:", error);
+                document.getElementById('lista-gestion-canchas').innerHTML = `<tr><td colspan="3" class="text-red-500 p-4">Error al cargar canchas.</td></tr>`;
+            }
+        }
+
+        async function crearCancha(event) {
+            event.preventDefault(); // Evita que la página se recargue
+            
+            const complejoId = document.getElementById('filtro-complejo').value;
+            const nombre = document.getElementById('cancha-nombre').value;
+            const tipoCanchaId = document.getElementById('cancha-tipo').value;
+            const tipoSuperficieId = document.getElementById('cancha-superficie').value;
+
+            // Prepara el DTO que espera la API
+            const crearCanchaDto = {
+                complejoId: parseInt(complejoId),
+                tipoCanchaId: parseInt(tipoCanchaId),
+                tipoSuperficieId: parseInt(tipoSuperficieId),
+                nombre: nombre
+            };
+
+            const mensajeEl = document.getElementById('form-cancha-mensaje');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cancha`, {
+                    method: 'POST',
+                    headers: AUTH_HEADERS,
+                    body: JSON.stringify(crearCanchaDto)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al crear la cancha');
+                }
+
+                const nuevaCancha = await response.json();
+                
+                // Mostrar mensaje de éxito
+                mensajeEl.textContent = `¡Cancha "${nuevaCancha.nombre}" creada con éxito!`;
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700";
+                mensajeEl.classList.remove('hidden');
+
+                // Limpiar formulario y recargar lista
+                document.getElementById('form-gestion-cancha').reset();
+                cargarDatosGestion(); // Recarga la pestaña
+
+            } catch (error) {
+                mensajeEl.textContent = error.message;
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700";
+                mensajeEl.classList.remove('hidden');
+            }
+        }
+
+        // --- PESTAÑA 3: EQUIPO ---
+        async function cargarDatosEquipo() {
+            const listaElement = document.getElementById('lista-equipo');
+            listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
+            
+            try {
+                const data = await apiFetch(`/admin/empleados`); // Llama a GET /api/admin/empleados
+                listaElement.innerHTML = '';
+                data.forEach(empleado => {
+                    listaElement.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${empleado.nombre} ${empleado.apellido}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.cargo}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.telefono}</td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error al cargar equipo:", error);
+                listaElement.innerHTML = `<tr><td colspan="4" class="text-red-500 p-4">Error al cargar equipo. ${error.message}</td></tr>`;
+            }
+        }
+
+        // --- PESTAÑA 4: SUCURSALES ---
+        async function cargarDatosSucursales() {
+            const listaElement = document.getElementById('lista-sucursales');
+            listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
+
+            try {
+                const data = await apiFetch(`/admin/complejos`); // Llama a GET /api/admin/complejos
+                listaElement.innerHTML = '';
+                data.forEach(complejo => {
+                    listaElement.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${complejo.nombre}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${complejo.direccion.calle} ${complejo.direccion.numero}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${complejo.direccion.ciudad}</td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error al cargar sucursales:", error);
+                listaElement.innerHTML = `<tr><td colspan="3" class="text-red-500 p-4">Error al cargar sucursales. ${error.message}</td></tr>`;
+            }
+        }
+
+    </script>
+
+</body>
+</html>

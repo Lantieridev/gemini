@@ -19,36 +19,35 @@ namespace complejoDeportivo.Services.Implementations
             var (inicio, fin) = filtros.ObtenerRangoFechas();
             string agrupacion = (fin - inicio).TotalDays > 31 ? "mensual" : "diario";
 
-            // Usar Task.WhenAll para ejecutar consultas en paralelo
-            var resumenTask = _repository.GetResumenAsync(filtros);
-            var ingresosTask = _repository.GetIngresosPorPeriodoAsync(filtros, agrupacion);
-            var estadosTask = _repository.GetEstadosReservasAsync(filtros);
-            var recientesTask = _repository.GetReservasRecientesAsync(filtros);
-            var clientesTask = _repository.GetClientesFrecuentesAsync(filtros);
-            var canchasTask = _repository.GetCanchasPopularesAsync(filtros);
-            var ocupacionTask = _repository.GetOcupacionPorHorarioAsync(filtros);
-            var alertasTask = _repository.GetAlertasStockAsync(filtros);
+            // --- INICIO DE LA CORRECCIÓN ---
+            // Ejecutamos las tareas secuencialmente para evitar el error de DbContext.
+            // La optimización de Task.WhenAll se mantiene DENTRO de GetResumenAsync, 
+            // pero el servicio debe esperar a que termine antes de empezar la siguiente.
 
-            await Task.WhenAll(
-                resumenTask, ingresosTask, estadosTask, 
-                recientesTask, clientesTask, canchasTask, 
-                ocupacionTask, alertasTask
-            );
+            var resumen = await _repository.GetResumenAsync(filtros);
+            var ingresos = await _repository.GetIngresosPorPeriodoAsync(filtros, agrupacion);
+            var estados = await _repository.GetEstadosReservasAsync(filtros);
+            var recientes = await _repository.GetReservasRecientesAsync(filtros);
+            var clientes = await _repository.GetClientesFrecuentesAsync(filtros);
+            var canchas = await _repository.GetCanchasPopularesAsync(filtros);
+            var ocupacion = await _repository.GetOcupacionPorHorarioAsync(filtros);
+            var alertas = await _repository.GetAlertasStockAsync(filtros);
+
+            // --- FIN DE LA CORRECCIÓN ---
 
             // Formatear períodos de ingresos
-            var ingresos = ingresosTask.Result;
             ingresos.ForEach(i => i.Periodo = IngresoPeriodoDto.FormatearPeriodo(i.Fecha, agrupacion));
 
             var dashboard = new DashboardCompletoDto
             {
-                Resumen = resumenTask.Result,
+                Resumen = resumen,
                 IngresosPorPeriodo = ingresos,
-                EstadosDeReservas = estadosTask.Result,
-                ReservasRecientes = recientesTask.Result,
-                ClientesFrecuentes = clientesTask.Result,
-                CanchasPopulares = canchasTask.Result,
-                OcupacionPorHorario = ocupacionTask.Result,
-                AlertasDeStock = alertasTask.Result
+                EstadosDeReservas = estados,
+                ReservasRecientes = recientes,
+                ClientesFrecuentes = clientes,
+                CanchasPopulares = canchas,
+                OcupacionPorHorario = ocupacion,
+                AlertasDeStock = alertas
             };
 
             return dashboard;
