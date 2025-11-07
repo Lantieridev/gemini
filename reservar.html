@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Reserva - Complejo Deportivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Estilo para el horario seleccionado */
+        .horario-btn.selected {
+            background-color: #2563EB; /* bg-blue-600 */
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-blue-600">Complejo</span>
+                    <span class="text-2xl font-bold text-gray-700">Deportivo</span>
+                </a>
+                <div>
+                     <a href="index.html" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                        &larr; Volver al inicio
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg m-4">
+            
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-900">Nueva Reserva</h3>
+                <a href="index.html" class="text-gray-400 hover:text-gray-600" title="Cancelar e ir al inicio">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </a>
+            </div>
+
+            <div class="p-6">
+                <div id="reserva-panel-1">
+                    <h4 class="text-lg font-medium text-gray-800 mb-4">Paso 1: Elige complejo y fecha</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="reserva-complejo" class="block text-sm font-medium text-gray-700">Complejo</label>
+                            <select id="reserva-complejo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">Cargando complejos...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="reserva-fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+                            <input type="date" id="reserva-fecha" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div id="paso1-error" class="text-red-600 text-sm hidden"></div>
+                        <button id="btn-paso1-siguiente" class="w-full py-2 px-4 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700">
+                            Siguiente (Elegir Cancha)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="reserva-panel-2" class="hidden">
+                    <h4 class="text-lg font-medium text-gray-800 mb-4">Paso 2: Elige la cancha</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="reserva-cancha" class="block text-sm font-medium text-gray-700">Cancha disponible</label>
+                            <select id="reserva-cancha" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">Cargando canchas...</option>
+                            </select>
+                        </div>
+                        <div id="paso2-error" class="text-red-600 text-sm hidden"></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="btn-paso2-atras" class="w-full py-2 px-4 bg-gray-200 text-gray-700 rounded-md font-medium hover:bg-gray-300">Atrás</button>
+                            <button id="btn-paso2-siguiente" class="w-full py-2 px-4 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700">
+                                Siguiente (Ver Horarios)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reserva-panel-3" class="hidden">
+                    <h4 class="text-lg font-medium text-gray-800 mb-4">Paso 3: Elige tu horario</h4>
+                    <div id="reserva-horarios-loader" class="text-center py-8">
+                        <p class="text-gray-500">Buscando horarios disponibles...</p>
+                    </div>
+                    <div id="reserva-horarios-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-60 overflow-y-auto">
+                        </div>
+                    <div id="paso3-error" class="text-red-600 text-sm hidden mt-4"></div>
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <button id="btn-paso3-atras" class="w-full py-2 px-4 bg-gray-200 text-gray-700 rounded-md font-medium hover:bg-gray-300">Atrás</button>
+                        <button id="btn-paso3-siguiente" class="w-full py-2 px-4 bg-green-600 text-white rounded-md font-medium hover:bg-green-700">
+                            Confirmar Reserva
+                        </button>
+                    </div>
+                </div>
+
+                <div id="reserva-panel-4" class="hidden text-center py-8">
+                    <div id="reserva-resultado-exito" class="hidden">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mx-auto">
+                           <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        </div>
+                        <h4 class="text-xl font-medium text-gray-800 mt-4">¡Reserva Confirmada!</h4>
+                        <p class="text-gray-500 mt-2">Recibirás un email con los detalles. ¡Gracias!</p>
+                        <a href="index.html" class="mt-6 w-full inline-block py-2 px-4 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700">
+                            Volver al Inicio
+                        </a>
+                    </div>
+                    <div id="reserva-resultado-error" class="hidden">
+                         <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-100 text-red-600 mx-auto">
+                           <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </div>
+                        <h4 class="text-xl font-medium text-gray-800 mt-4">Error en la Reserva</h4>
+                        <p class="text-gray-500 mt-2" id="reserva-error-mensaje">No pudimos procesar tu reserva.</p>
+                         <a href="index.html" class="mt-6 w-full inline-block py-2 px-4 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700">
+                            Volver al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p>&copy; 2025 Complejo Deportivo. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+
+    <script>
+        // --- 1. PROTEGER LA PÁGINA ---
+        try {
+            protegerPagina(['Cliente']);
+        } catch (e) {
+            console.error(e.message);
+            throw new Error("Redireccionando al login...");
+        }
+
+        // --- 2. LÓGICA DEL WIZARD DE RESERVA ---
+        
+        // Estado temporal del wizard de reserva
+        let reservaState = {};
+
+        // Referencias a los paneles
+        const paneles = [
+            document.getElementById('reserva-panel-1'),
+            document.getElementById('reserva-panel-2'),
+            document.getElementById('reserva-panel-3'),
+            document.getElementById('reserva-panel-4')
+        ];
+
+        /**
+         * Helper para cambiar entre paneles del wizard
+         * @param {number} panelIdToShow (1-basado)
+         * @param {number} panelIdToHide (1-basado, 0 para no ocultar)
+         */
+        function cambiarPanel(panelIdToShow, panelIdToHide) {
+            if (panelIdToHide > 0) {
+                paneles[panelIdToHide - 1].classList.add('hidden');
+            }
+            document.getElementById('reserva-resultado-exito').classList.add('hidden');
+            document.getElementById('reserva-resultado-error').classList.add('hidden');
+            paneles[panelIdToShow - 1].classList.remove('hidden');
+        }
+
+        /**
+         * Pide los complejos a la API y rellena el select
+         */
+        async function cargarPaso1_Complejos() {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('reserva-fecha').min = hoy;
+            document.getElementById('reserva-fecha').value = hoy; // Poner hoy por defecto
+
+            const select = document.getElementById('reserva-complejo');
+            try {
+                // Usamos el apiFetch global de auth.js (no necesita token)
+                const complejos = await apiFetch('/reserva/complejos', {}, false); 
+                
+                select.innerHTML = '<option value="">Selecciona un complejo</option>';
+                complejos.forEach(c => {
+                    select.innerHTML += `<option value="${c.complejoId}">${c.nombre}</option>`;
+                });
+            } catch (error) {
+                select.innerHTML = `<option value="">Error al cargar</option>`;
+                console.error(error);
+            }
+        }
+
+        /**
+         * Valida el Paso 1 y carga los datos del Paso 2
+         */
+        async function handlePaso1() {
+            const complejoId = document.getElementById('reserva-complejo').value;
+            const fecha = document.getElementById('reserva-fecha').value;
+            const errorEl = document.getElementById('paso1-error');
+
+            if (!complejoId || !fecha) {
+                errorEl.textContent = 'Por favor, selecciona un complejo y una fecha.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            errorEl.classList.add('hidden');
+
+            reservaState = { complejoId, fecha };
+            await cargarPaso2_Canchas(complejoId);
+            cambiarPanel(2, 1);
+        }
+
+        /**
+         * Pide las canchas (activas) del complejo
+         */
+        async function cargarPaso2_Canchas(complejoId) {
+            const select = document.getElementById('reserva-cancha');
+            select.innerHTML = '<option value="">Buscando canchas...</option>';
+            try {
+                // Usamos el apiFetch global de auth.js (no necesita token)
+                const canchas = await apiFetch(`/reserva/canchas/${complejoId}`, {}, false);
+                
+                if(canchas.length === 0) {
+                     select.innerHTML = '<option value="">No hay canchas disponibles</option>';
+                     return;
+                }
+
+                select.innerHTML = '<option value="">Selecciona una cancha</option>';
+                canchas.forEach(c => {
+                    select.innerHTML += `<option value="${c.canchaId}">${c.nombre}</option>`;
+                });
+            } catch (error) {
+                select.innerHTML = `<option value="">Error al cargar</option>`;
+                console.error(error);
+            }
+        }
+
+        /**
+         * Valida el Paso 2 y carga los datos del Paso 3
+         */
+        async function handlePaso2() {
+            const canchaId = document.getElementById('reserva-cancha').value;
+            const errorEl = document.getElementById('paso2-error');
+
+            if (!canchaId) {
+                errorEl.textContent = 'Por favor, selecciona una cancha.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            errorEl.classList.add('hidden');
+            reservaState.canchaId = canchaId;
+            await cargarPaso3_Horarios(reservaState.canchaId, reservaState.fecha);
+            cambiarPanel(3, 2);
+        }
+
+        /**
+         * Pide los horarios disponibles para la cancha y fecha
+         */
+        async function cargarPaso3_Horarios(canchaId, fecha) {
+            const loader = document.getElementById('reserva-horarios-loader');
+            const grid = document.getElementById('reserva-horarios-grid');
+            const errorEl = document.getElementById('paso3-error');
+            
+            loader.classList.remove('hidden');
+            grid.innerHTML = '';
+            errorEl.classList.add('hidden');
+            reservaState.horaInicio = null;
+            reservaState.horaFin = null;
+
+            try {
+                // Usamos el apiFetch global de auth.js (no necesita token)
+                const horarios = await apiFetch(`/reserva/disponibilidad?canchaId=${canchaId}&fecha=${fecha}`, {}, false);
+                loader.classList.add('hidden');
+
+                if (horarios.length === 0) {
+                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center">No hay horarios disponibles.</p>';
+                    return;
+                }
+
+                horarios.forEach(horario => {
+                    const horaInicioSimple = horario.horaInicio.substring(0, 5); 
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'horario-btn p-2 border rounded-md text-sm font-medium hover:border-blue-500';
+                    button.textContent = horaInicioSimple;
+                    button.dataset.inicio = horario.horaInicio;
+                    button.dataset.fin = horario.horaFin;
+                    grid.appendChild(button);
+                });
+
+            } catch (error) {
+                loader.classList.add('hidden');
+                errorEl.textContent = error.message;
+                errorEl.classList.remove('hidden');
+                console.error(error);
+            }
+        }
+
+        /**
+         * Maneja la selección de un horario en la grilla
+         */
+        function handleSeleccionHorario(event) {
+            const target = event.target;
+            if (target.tagName !== 'BUTTON' || !target.classList.contains('horario-btn')) {
+                return;
+            }
+            document.querySelectorAll('.horario-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            target.classList.add('selected');
+            reservaState.horaInicio = target.dataset.inicio;
+            reservaState.horaFin = target.dataset.fin;
+        }
+
+        /**
+         * Valida el Paso 3 y llama a la creación de la reserva
+         */
+        async function handlePaso3() {
+            const errorEl = document.getElementById('paso3-error');
+            if (!reservaState.horaInicio) {
+                errorEl.textContent = 'Por favor, selecciona un horario.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            errorEl.classList.add('hidden');
+            await crearReserva();
+        }
+
+        /**
+         * Envía la reserva final a la API
+         */
+        async function crearReserva() {
+            // Obtenemos el clienteId desde el AuthService
+            const clienteId = AuthService.getUserData().clienteId;
+
+            const crearReservaDto = {
+                clienteId: parseInt(clienteId),
+                canchaIds: [ parseInt(reservaState.canchaId) ],
+                fecha: reservaState.fecha,
+                horaInicio: reservaState.horaInicio,
+                horaFin: reservaState.horaFin,
+                ambito: "Web"
+            };
+
+            try {
+                // Usamos el apiFetch global de auth.js (¡este SÍ envía el token!)
+                await apiFetch('/reserva', {
+                    method: 'POST',
+                    body: JSON.stringify(crearReservaDto)
+                });
+                
+                document.getElementById('reserva-resultado-exito').classList.remove('hidden');
+                cambiarPanel(4, 3);
+
+            } catch (error) {
+                document.getElementById('reserva-error-mensaje').textContent = error.message;
+                document.getElementById('reserva-resultado-error').classList.remove('hidden');
+                cambiarPanel(4, 3);
+                console.error("Error al crear reserva:", error);
+            }
+        }
+
+
+        // --- Punto de Entrada ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Cargar datos iniciales del wizard (Paso 1)
+            cargarPaso1_Complejos();
+            cambiarPanel(1, -1); // Mostrar panel 1
+            
+            // 2. Listeners del wizard
+            document.getElementById('btn-paso1-siguiente').addEventListener('click', handlePaso1);
+            document.getElementById('btn-paso2-atras').addEventListener('click', () => cambiarPanel(1, 2));
+            document.getElementById('btn-paso2-siguiente').addEventListener('click', handlePaso2);
+            document.getElementById('btn-paso3-atras').addEventListener('click', () => cambiarPanel(2, 3));
+            document.getElementById('btn-paso3-siguiente').addEventListener('click', handlePaso3);
+            document.getElementById('reserva-horarios-grid').addEventListener('click', handleSeleccionHorario);
+        });
+
+    </script>
+
+</body>
+</html>
