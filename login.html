@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Complejo Deportivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="h-full bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+                Bienvenido
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Inicia sesión o
+                <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">
+                    créa una cuenta nueva
+                </button>
+            </p>
+        </div>
+
+        <form id="form-login" class="mt-8 space-y-6">
+            <input type="hidden" name="remember" value="true">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="login-email" class="sr-only">Email</label>
+                    <input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email">
+                </div>
+                <div>
+                    <label for="login-password" class="sr-only">Contraseña</label>
+                    <input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Contraseña">
+                </div>
+            </div>
+
+            <div id="login-error" class="text-red-600 text-sm hidden"></div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Iniciar Sesión
+                </button>
+            </div>
+        </form>
+
+        <form id="form-registro" class="mt-8 space-y-6 hidden">
+            <div class="rounded-md shadow-sm space-y-2">
+                <input id="reg-nombre" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Nombre">
+                <input id="reg-apellido" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Apellido">
+                <input id="reg-documento" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Documento (DNI)">
+                <input id="reg-telefono" type="tel" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Teléfono (ej: 351... )">
+                <input id="reg-email" type="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Email">
+                <input id="reg-password" type="password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Contraseña (mín 6 caracteres)">
+            </div>
+            
+            <div id="registro-error" class="text-red-600 text-sm hidden"></div>
+            <div id="registro-exito" class="text-green-600 text-sm hidden"></div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Crear Cuenta
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-2 text-center text-sm text-gray-600">
+            <a href="index.html" class="font-medium text-blue-600 hover:text-blue-500">
+                &larr; Volver al inicio
+            </a>
+        </p>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:5026/api"; // Usa la URL de tu API
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const formLogin = document.getElementById('form-login');
+            const formRegistro = document.getElementById('form-registro');
+            const btnToggle = document.getElementById('btn-toggle-register');
+            const titulo = document.querySelector('h2');
+            const parrafo = document.querySelector('p.mt-2');
+
+            // --- Toggle entre Login y Registro ---
+            btnToggle.addEventListener('click', () => {
+                if (formLogin.classList.contains('hidden')) {
+                    // Cambiar a Login
+                    formLogin.classList.remove('hidden');
+                    formRegistro.classList.add('hidden');
+                    titulo.textContent = 'Bienvenido';
+                    parrafo.innerHTML = 'Inicia sesión o <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">créa una cuenta nueva</button>';
+                    // Volver a añadir el listener al botón recreado
+                    document.getElementById('btn-toggle-register').addEventListener('click', arguments.callee);
+                } else {
+                    // Cambiar a Registro
+                    formLogin.classList.add('hidden');
+                    formRegistro.classList.remove('hidden');
+                    titulo.textContent = 'Crear cuenta nueva';
+                    parrafo.innerHTML = '¿Ya tienes cuenta? <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">Inicia sesión</button>';
+                    // Volver a añadir el listener al botón recreado
+                    document.getElementById('btn-toggle-register').addEventListener('click', arguments.callee);
+                }
+            });
+
+            // --- Handler de Login ---
+            formLogin.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const errorEl = document.getElementById('login-error');
+                errorEl.classList.add('hidden');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Credenciales incorrectas');
+                    }
+
+                    const data = await response.json(); // Este es tu LoginResponseDTO
+
+                    // --- ¡AQUÍ ESTÁ LA MAGIA! ---
+                    // Guardamos todo en localStorage
+                    localStorage.setItem('jwtToken', data.token);
+                    localStorage.setItem('userEmail', data.email);
+                    localStorage.setItem('userRol', data.rol);
+                    
+                    // Guardamos el clienteId (¡Gracias al ajuste que hicimos en la API!)
+                    if(data.clienteId) {
+                        localStorage.setItem('clienteId', data.clienteId);
+                    }
+
+                    // --- Redirección por ROL ---
+                    if (data.rol === 'Admin' || data.rol === 'Empleado') {
+                        window.location.href = 'empleado.html'; // Al panel de admin
+                    } else {
+                        window.location.href = 'index.html'; // Al home
+                    }
+
+                } catch (error) {
+                    errorEl.textContent = error.message;
+                    errorEl.classList.remove('hidden');
+                }
+            });
+
+            // --- Handler de Registro ---
+            formRegistro.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const errorEl = document.getElementById('registro-error');
+                const exitoEl = document.getElementById('registro-exito');
+                errorEl.classList.add('hidden');
+                exitoEl.classList.add('hidden');
+
+                // Este es el RegisterClienteDTO
+                const dto = {
+                    email: document.getElementById('reg-email').value,
+                    password: document.getElementById('reg-password').value,
+                    nombre: document.getElementById('reg-nombre').value,
+                    apellido: document.getElementById('reg-apellido').value,
+                    telefono: document.getElementById('reg-telefono').value,
+                    documento: document.getElementById('reg-documento').value
+                };
+
+                try {
+                    // Llamamos al endpoint de registro
+                    const response = await fetch(`${API_BASE_URL}/account/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dto)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Error al registrar.');
+                    }
+
+                    // const nuevoUsuario = await response.json();
+                    
+                    // Éxito
+                    exitoEl.textContent = '¡Cuenta creada! Por favor, inicia sesión.';
+                    exitoEl.classList.remove('hidden');
+                    formRegistro.reset();
+                    
+                    // Simular click para volver al login
+                    document.getElementById('btn-toggle-register').click();
+
+                } catch (error) {
+                    errorEl.textContent = error.message;
+                    errorEl.classList.remove('hidden');
+                }
+            });
+
+            // --- Check de URL ---
+            // Si el usuario viene de "Registrarse", muestra el form de registro
+            if(window.location.hash === '#registro') {
+                btnToggle.click();
+            }
+        });
+    </script>
+</body>
+</html>
