@@ -1,0 +1,186 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "ComplejoDeportivoContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "MinimumProductVersion": "2.6.1186",
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "complejoDeportivo",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Almacen]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Asador]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[BloqueoCancha]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CalendarioFeriados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Cancha]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CategoriaProducto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Cliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Complejo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetalleReserva]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DetalleReservaAsador]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Direccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Empleado]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EstadoPago]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[EstadoReserva]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Factura]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FacturaDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FormaPago]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MovimientoStock]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Pago]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PedidoKiosko]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PedidoKioskoDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Producto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProductoProveedor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Proveedor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProveedorContacto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Reserva]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ReservaAsador]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Stock]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Tarifa]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TipoCancha]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TipoComprobante]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TipoMovimientoStock]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TipoSuperficie]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UnidadMedida]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Usuario]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}
