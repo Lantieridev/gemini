@@ -40,16 +40,13 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* --- INICIO MODIFICADO: Estilos para el Modal --- */
-        /* Clases para la transición del modal (opcional pero queda bien) */
+        /* Estilos para el Modal */
         .modal {
             transition: opacity 0.25s ease;
         }
         .modal-content {
             transition: transform 0.25s ease;
         }
-        /* --- FIN MODIFICADO --- */
-
     </style>
 </head>
 <body class="h-full bg-gray-100 text-gray-900">
@@ -59,7 +56,8 @@
         <header class="mb-6 flex flex-col md:flex-row justify-between md:items-center">
             <h1 class="text-3xl font-bold text-gray-800">Panel de Empleado</h1>
             <div class="mt-2 md:mt-0 text-sm text-gray-600">
-                Bienvenido, <span id="nombre-usuario" class="font-medium">Usuario</span> (<span id="rol-usuario">Empleado</span>)
+                Bienvenido, <span id="nombre-usuario" class="font-medium">Cargando...</span> (<span id="rol-usuario">...</span>)
+                <button id="btn-logout-empleado" class="ml-4 text-blue-600 hover:text-blue-800 font-medium">[Cerrar Sesión]</button>
             </div>
         </header>
 
@@ -91,9 +89,7 @@
                         <div class="flex-1">
                             <label for="filtro-complejo" class="block text-sm font-medium text-gray-700">Complejo</label>
                             <select id="filtro-complejo" name="complejo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                <option value="1">Complejo Central</option>
-                                <option value="2">Complejo Zona Norte</option>
-                            </select>
+                                </select>
                         </div>
                         <div class="flex-1">
                             <label for="filtro-rango-fechas" class="block text-sm font-medium text-gray-700">Rango de Fechas</label>
@@ -253,7 +249,7 @@
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                                            </tr>
+                                        </tr>
                                     </thead>
                                     <tbody id="lista-gestion-canchas" class="bg-white divide-y divide-gray-200">
                                         </tbody>
@@ -377,24 +373,23 @@
             </div>
         </div>
     </div>
+
+    <script src="auth.js"></script>
+
     <script>
+        // --- 1. PROTEGER LA PÁGINA ---
+        try {
+            protegerPagina(['Admin', 'Empleado']);
+        } catch (e) {
+            // Detiene la ejecución del script si protegerPagina() lanza un error (redirección)
+            console.error(e.message);
+            // Detenemos el script para que no intente cargar el dashboard
+            throw new Error("Redireccionando al login...");
+        }
+
         // --- Variables Globales ---
         let graficoIngresosInstance = null;
         let graficoEstadosInstance = null;
-        
-        // USA LA URL DE TU launchSettings.json [https]
-        const API_BASE_URL = "http://localhost:5026/api"; 
-
-        // IMPORTANTE: Pega aquí el token JWT que obtuviste de /api/auth/login
-        // Lo saqué de tu log de error para que funcione de una.
-        const JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MyIsImVtYWlsIjoibWFydGlubGFudGllcmlAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NjI1NzcwNjksImlzcyI6Imh0dHBzOi8vYXBpLmNvbXBsZWpvZGVwb3J0aXZvLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXBpLmNvbXBsZWpvZGVwb3J0aXZvLmNvbSJ9.VeXUOQmG6e0EX2dBU2fdM9aAlL8Nx35n1KRGjBLJwwk";
-
-        // Headers para todas las peticiones fetch
-        const AUTH_HEADERS = {
-            'Authorization': `Bearer ${JWT_TOKEN}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        };
 
         // --- Formateadores (Helpers) ---
         const formatCurrency = (value) => {
@@ -405,14 +400,16 @@
                 maximumFractionDigits: 0
             }).format(value);
         };
-
-        const formatDate = (dateString) => {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        };
         
-        // --- Lógica de Pestañas ---
+        // --- Lógica de Pestañas y Carga ---
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // Setea el email y rol del usuario logueado
+            const usuario = AuthService.getUserData();
+            document.getElementById('nombre-usuario').textContent = usuario.email;
+            document.getElementById('rol-usuario').textContent = usuario.rol;
+            document.getElementById('btn-logout-empleado').addEventListener('click', AuthService.logout);
+            
             const tabs = document.querySelectorAll('.tab-button');
             const panels = document.querySelectorAll('[role="tabpanel"]');
 
@@ -437,8 +434,7 @@
                         panel.classList.remove('hidden');
                     }
 
-                    // --- Carga de datos al cambiar de pestaña ---
-                    // Carga los datos solo la primera vez que se hace clic
+                    // Carga de datos al cambiar de pestaña
                     if (panelId === 'panel-dashboard' && !panel.dataset.loaded) {
                         cargarDatosDashboard();
                     } else if (panelId === 'panel-gestion' && !panel.dataset.loaded) {
@@ -452,20 +448,15 @@
                 });
             });
 
-            // Carga inicial de la pestaña de dashboard
+            // Carga inicial del dashboard y otros datos
+            cargarComplejosGlobal(); // Carga el <select> de complejos
+            cargarDatosDashboard(); // Carga el dashboard con el complejo por defecto
             document.getElementById('panel-dashboard').dataset.loaded = true;
-            cargarDatosDashboard();
 
-            // Listener para el botón de filtros del dashboard
+            // Listeners
             document.getElementById('btn-aplicar-filtros').addEventListener('click', cargarDatosDashboard);
-
-            // Listener para el formulario de crear cancha
             document.getElementById('form-gestion-cancha').addEventListener('submit', crearCancha);
-
-            // Listener para el formulario de Tipo Cancha
             document.getElementById('form-gestion-tipo-cancha').addEventListener('submit', crearTipoCancha);
-            
-            // Listener para botones de la tabla de canchas (Event Delegation)
             document.getElementById('lista-gestion-canchas').addEventListener('click', (event) => {
                 const button = event.target.closest('.btn-toggle-estado');
                 if (button) {
@@ -473,82 +464,60 @@
                 }
             });
             
-            // --- INICIO MODIFICADO: Listeners para los nuevos modales ---
+            // Listeners para los modales
             const modalConfirm = document.getElementById('modal-confirmacion');
             const btnConfirmar = document.getElementById('btn-confirmar');
             const btnCancelar = document.getElementById('btn-cancelar');
-            
             const modalAlerta = document.getElementById('modal-alerta');
             const btnAlertaOk = document.getElementById('btn-alerta-ok');
 
-            // Cierra el modal de confirmación
-            btnCancelar.addEventListener('click', () => {
-                modalConfirm.classList.add('hidden');
-            });
+            btnCancelar.addEventListener('click', () => modalConfirm.classList.add('hidden'));
+            btnAlertaOk.addEventListener('click', () => modalAlerta.classList.add('hidden'));
 
-            // Cierra el modal de alerta
-            btnAlertaOk.addEventListener('click', () => {
-                modalAlerta.classList.add('hidden');
-            });
-
-            // El botón de Confirmar ejecuta el callback que le pasamos
             btnConfirmar.addEventListener('click', () => {
-                // 'callback' se adjunta dinámicamente en 'abrirModalConfirmacion'
                 if (modalConfirm.callback) {
                     modalConfirm.callback();
-                    modalConfirm.callback = null; // Limpiar el callback después de usarlo
+                    modalConfirm.callback = null; 
                 }
                 modalConfirm.classList.add('hidden');
             });
-            // --- FIN MODIFICADO ---
         });
 
-        // --- INICIO MODIFICADO: Funciones para manejar los Modales ---
-        
-        /**
-         * Abre un modal de confirmación (Sí/No).
-         * @param {string} titulo - El título del modal.
-         * @param {string} mensaje - La pregunta de confirmación.
-         * @param {function} onConfirmCallback - La función que se ejecutará si el usuario hace clic en "Confirmar".
-         */
+        // --- Funciones de Modales ---
         function abrirModalConfirmacion(titulo, mensaje, onConfirmCallback) {
             const modal = document.getElementById('modal-confirmacion');
             document.getElementById('modal-confirm-titulo').textContent = titulo;
             document.getElementById('modal-confirm-mensaje').textContent = mensaje;
-            
-            // Almacenamos la función de callback en el propio elemento modal
-            // para que el listener del botón "btn-confirmar" pueda encontrarla.
             modal.callback = onConfirmCallback;
-            
             modal.classList.remove('hidden');
         }
-
-        /**
-         * Abre un modal de alerta simple (OK).
-         * @param {string} titulo - El título del modal (ej. "Éxito" o "Error").
-         * @param {string} mensaje - El mensaje a mostrar.
-         */
         function abrirModalAlerta(titulo, mensaje) {
             const modal = document.getElementById('modal-alerta');
             document.getElementById('modal-alerta-titulo').textContent = titulo;
             document.getElementById('modal-alerta-mensaje').textContent = mensaje;
             modal.classList.remove('hidden');
         }
-        // --- FIN MODIFICADO ---
 
-
-        // --- Lógica de Petición (Fetch) Genérica ---
-        async function apiFetch(endpoint) {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                headers: AUTH_HEADERS
-            });
-            
-            if (!response.ok) {
-                const errorTexto = await response.text();
-                console.error(`Error en ${endpoint}:`, errorTexto);
-                throw new Error(`Error ${response.status} en ${endpoint}`);
+        /**
+         * Carga el <select> de complejos en el filtro del dashboard
+         */
+        async function cargarComplejosGlobal() {
+            const select = document.getElementById('filtro-complejo');
+            try {
+                // Llama al endpoint de admin/complejos (es AllowAnonymous en tu API, pero lo llamamos con token igual)
+                const complejos = await apiFetch(`/admin/complejos`); 
+                select.innerHTML = ''; // Limpia el "Cargando..."
+                if (complejos.length === 0) {
+                     select.innerHTML = '<option value="">No hay complejos</option>';
+                     return;
+                }
+                complejos.forEach(c => {
+                    select.innerHTML += `<option value="${c.complejoId}">${c.nombre}</option>`;
+                });
+            } catch (error) {
+                console.error("Error cargando complejos:", error);
+                select.innerHTML = '<option value="">Error al cargar</option>';
             }
-            return await response.json();
         }
 
         // --- PESTAÑA 1: DASHBOARD ---
@@ -556,29 +525,27 @@
             const complejoId = document.getElementById('filtro-complejo').value;
             const periodo = document.getElementById('filtro-rango-fechas').value;
             
-            // Construye el query string EXACTAMENTE como lo espera FiltrosDashboardDto.cs
+            if (!complejoId) {
+                document.getElementById('dashboard-error-mensaje').textContent = "Por favor, seleccione un complejo.";
+                document.getElementById('dashboard-error').classList.remove('hidden');
+                return;
+            }
+
             const queryString = `?ComplejoId=${complejoId}&PeriodoPredefinido=${periodo}`;
 
-            // Mostrar loader y ocultar contenido/error
             document.getElementById('dashboard-loader').classList.remove('hidden');
             document.getElementById('dashboard-content').classList.add('hidden');
             document.getElementById('dashboard-error').classList.add('hidden');
 
             try {
                 const data = await apiFetch(`/dashboard${queryString}`);
-
-                // 1. Actualizar KPIs (usa los datos del JSON)
+                
                 actualizarKPIs(data.resumen);
-
-                // 2. Actualizar Gráficos (usa los datos del JSON)
                 crearGraficoIngresos(data.ingresosPorPeriodo);
                 crearGraficoEstados(data.estadosDeReservas);
-
-                // 3. Actualizar Listas (usa los datos del JSON)
                 actualizarListaReservas(data.reservasRecientes);
                 actualizarListaCanchas(data.canchasPopulares);
 
-                // Mostrar contenido y ocultar loader
                 document.getElementById('dashboard-content').classList.remove('hidden');
 
             } catch (error) {
@@ -589,7 +556,7 @@
                 document.getElementById('dashboard-loader').classList.add('hidden');
             }
         }
-
+        
         function actualizarKPIs(resumen) {
             document.getElementById('kpi-ingresos-hoy').textContent = formatCurrency(resumen.ingresosHoy);
             document.getElementById('kpi-reservas-hoy').textContent = resumen.reservasHoy;
@@ -598,18 +565,16 @@
 
         function crearGraficoIngresos(ingresosData) {
             const ctx = document.getElementById('grafico-ingresos').getContext('2d');
-            
             if (graficoIngresosInstance) {
                 graficoIngresosInstance.destroy();
             }
-
             graficoIngresosInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ingresosData.map(d => d.periodo), // 'periodo' (ej: '01/11')
+                    labels: ingresosData.map(d => d.periodo),
                     datasets: [{
                         label: 'Ingresos',
-                        data: ingresosData.map(d => d.total), // 'total'
+                        data: ingresosData.map(d => d.total),
                         borderColor: '#3B82F6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         fill: true,
@@ -627,18 +592,16 @@
 
         function crearGraficoEstados(estadosData) {
             const ctx = document.getElementById('grafico-estados').getContext('2d');
-            
             if (graficoEstadosInstance) {
                 graficoEstadosInstance.destroy();
             }
-
             graficoEstadosInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: estadosData.map(e => e.estado), // 'estado' (ej: 'Confirmada')
+                    labels: estadosData.map(e => e.estado),
                     datasets: [{
-                        data: estadosData.map(e => e.cantidad), // 'cantidad'
-                        backgroundColor: estadosData.map(e => e.color), // ¡Usamos el color de la API!
+                        data: estadosData.map(e => e.cantidad),
+                        backgroundColor: estadosData.map(e => e.color), 
                         hoverOffset: 4
                     }]
                 },
@@ -653,15 +616,12 @@
         function actualizarListaReservas(reservas) {
             const listaElement = document.getElementById('lista-reservas-recientes');
             listaElement.innerHTML = ''; 
-
             if (reservas.length === 0) {
                 listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay reservas recientes.</li>';
                 return;
             }
-
             reservas.forEach(reserva => {
-                // Usamos la lógica de clases de Tailwind basada en el estado
-                const estadoLower = reserva.estado.toLowerCase();
+                const estadoLower = (reserva.estado || 'desconocido').toLowerCase();
                 let estadoColor = 'bg-gray-100 text-gray-800';
                 if (estadoLower.includes('confirmada')) {
                     estadoColor = 'bg-green-100 text-green-800';
@@ -670,18 +630,16 @@
                 } else if (estadoLower.includes('cancelada')) {
                     estadoColor = 'bg-red-100 text-red-800';
                 }
-
                 const item = `
                     <li class="py-3 flex justify-between items-center">
                         <div>
                             <p class="text-sm font-medium text-gray-900">${reserva.clienteNombre} - ${reserva.canchaNombre}</p>
-                            <p class="text-sm text-gray-500">${reserva.fechaDisplay} (${reserva.horarioDisplay})</p>
+                            <p class="text-sm text-gray-500">${new Date(reserva.fecha).toLocaleDateString('es-AR')} (${reserva.horarioDisplay})</p>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estadoColor}">
                             ${reserva.estado}
                         </span>
-                    </li>
-                `;
+                    </li>`;
                 listaElement.innerHTML += item;
             });
         }
@@ -689,12 +647,10 @@
         function actualizarListaCanchas(canchas) {
             const listaElement = document.getElementById('lista-canchas-populares');
             listaElement.innerHTML = ''; 
-
             if (canchas.length === 0) {
                 listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay datos de canchas.</li>';
                 return;
             }
-
             canchas.forEach(cancha => {
                 const item = `
                     <li class="py-3 flex justify-between items-center">
@@ -703,21 +659,24 @@
                             <p class="text-sm text-gray-500">${cancha.tipoCancha}</p>
                         </div>
                         <p class="text-sm text-gray-700 font-medium">${cancha.reservasCount} Reservas</p>
-                    </li>
-                `;
+                    </li>`;
                 listaElement.innerHTML += item;
             });
         }
 
+
         // --- PESTAÑA 2: GESTIÓN ---
         async function cargarDatosGestion() {
-            // Carga las dos listas (Tipos de Cancha y Canchas) en paralelo
             const complejoId = document.getElementById('filtro-complejo').value;
+            if (!complejoId) {
+                abrirModalAlerta("Error", "Selecciona un complejo primero.");
+                return;
+            }
             
             try {
                 const [tiposData, canchasData] = await Promise.all([
-                    apiFetch(`/tiposcancha`),               // Llama a GET /api/tiposcancha
-                    apiFetch(`/cancha/complejo/${complejoId}`) // Llama a GET /api/cancha/complejo/{id}
+                    apiFetch(`/tiposcancha`),
+                    apiFetch(`/cancha/complejo/${complejoId}`)
                 ]);
 
                 // 1. Poblar el dropdown
@@ -751,7 +710,7 @@
                                     </svg>
                                 </button>
                             </td>
-                            </tr>
+                        </tr>
                     `;
                 });
 
@@ -770,18 +729,17 @@
             } catch (error) {
                 console.error("Error al cargar datos de gestión:", error);
                 document.getElementById('lista-gestion-canchas').innerHTML = `<tr><td colspan="3" class="text-red-500 p-4">Error al cargar canchas.</td></tr>`;
+                abrirModalAlerta("Error de Carga", error.message);
             }
         }
 
         async function crearCancha(event) {
-            event.preventDefault(); // Evita que la página se recargue
-            
+            event.preventDefault();
             const complejoId = document.getElementById('filtro-complejo').value;
             const nombre = document.getElementById('cancha-nombre').value;
             const tipoCanchaId = document.getElementById('cancha-tipo').value;
             const tipoSuperficieId = document.getElementById('cancha-superficie').value;
 
-            // Prepara el DTO que espera la API
             const crearCanchaDto = {
                 complejoId: parseInt(complejoId),
                 tipoCanchaId: parseInt(tipoCanchaId),
@@ -792,27 +750,17 @@
             const mensajeEl = document.getElementById('form-cancha-mensaje');
 
             try {
-                const response = await fetch(`${API_BASE_URL}/cancha`, {
+                const nuevaCancha = await apiFetch(`/cancha`, {
                     method: 'POST',
-                    headers: AUTH_HEADERS,
                     body: JSON.stringify(crearCanchaDto)
                 });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Error al crear la cancha');
-                }
-
-                const nuevaCancha = await response.json();
                 
-                // Mostrar mensaje de éxito
                 mensajeEl.textContent = `¡Cancha "${nuevaCancha.nombre}" creada con éxito!`;
                 mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700";
                 mensajeEl.classList.remove('hidden');
 
-                // Limpiar formulario y recargar lista
                 document.getElementById('form-gestion-cancha').reset();
-                cargarDatosGestion(); // Recarga la pestaña
+                cargarDatosGestion(); 
 
             } catch (error) {
                 mensajeEl.textContent = error.message;
@@ -820,17 +768,11 @@
                 mensajeEl.classList.remove('hidden');
             }
         }
-
+        
         async function crearTipoCancha(event) {
-            event.preventDefault(); // Evita que la página se recargue
-            
+            event.preventDefault(); 
             const nombre = document.getElementById('tipo-nombre').value;
-
-            // Prepara el DTO que espera la API
-            const crearTipoCanchaDto = {
-                nombre: nombre
-            };
-
+            const crearTipoCanchaDto = { nombre: nombre };
             const mensajeEl = document.getElementById('form-tipo-cancha-mensaje');
 
             if (!nombre) {
@@ -841,27 +783,17 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/tiposcancha`, {
+                const nuevoTipoCancha = await apiFetch(`/tiposcancha`, {
                     method: 'POST',
-                    headers: AUTH_HEADERS,
                     body: JSON.stringify(crearTipoCanchaDto)
                 });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Error al crear el tipo de cancha');
-                }
-
-                const nuevoTipoCancha = await response.json();
                 
-                // Mostrar mensaje de éxito
                 mensajeEl.textContent = `¡Tipo "${nuevoTipoCancha.nombre}" creado con éxito!`;
                 mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700";
                 mensajeEl.classList.remove('hidden');
 
-                // Limpiar formulario y recargar lista
                 document.getElementById('form-gestion-tipo-cancha').reset();
-                cargarDatosGestion(); // Recarga la pestaña
+                cargarDatosGestion(); 
 
             } catch (error) {
                 mensajeEl.textContent = error.message;
@@ -870,47 +802,29 @@
             }
         }
         
-        // --- INICIO MODIFICADO: Lógica del "switch" de estado con Modales ---
         async function handleToggleEstadoCancha(button) { 
             const id = button.dataset.id;
             const activa = button.dataset.activa === 'true'; 
             const accion = activa ? 'desactivar' : 'activar';
             const endpoint = `/cancha/${id}/${accion}`;
 
-            // 1. Definir la función que se ejecutará al confirmar
             const onConfirm = async () => {
                 try {
-                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                        method: 'PUT',
-                        headers: AUTH_HEADERS
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || `Error al ${accion} la cancha`);
-                    }
-
-                    // 2. Mostrar modal de éxito
+                    await apiFetch(endpoint, { method: 'PUT' });
                     abrirModalAlerta("Éxito", `¡Cancha ${accion}da con éxito!`);
-                    
-                    // Recargar los datos de la pestaña de gestión para ver el cambio
                     cargarDatosGestion(); 
-
                 } catch (error) {
-                    // 3. Mostrar modal de error
                     console.error(`Error al ${accion} cancha:`, error);
                     abrirModalAlerta("Error", error.message);
                 }
             };
 
-            // 4. Abrir el modal de confirmación
             abrirModalConfirmacion(
                 `Confirmar ${accion}`,
                 `¿Estás seguro de que deseas ${accion} esta cancha?`,
-                onConfirm // Pasamos la lógica del fetch como un callback
+                onConfirm
             );
         }
-        // --- FIN MODIFICADO ---
 
         // --- PESTAÑA 3: EQUIPO ---
         async function cargarDatosEquipo() {
@@ -918,7 +832,7 @@
             listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
             
             try {
-                const data = await apiFetch(`/admin/empleados`); // Llama a GET /api/admin/empleados
+                const data = await apiFetch(`/admin/empleados`); 
                 listaElement.innerHTML = '';
                 data.forEach(empleado => {
                     listaElement.innerHTML += `
@@ -933,6 +847,7 @@
             } catch (error) {
                 console.error("Error al cargar equipo:", error);
                 listaElement.innerHTML = `<tr><td colspan="4" class="text-red-500 p-4">Error al cargar equipo. ${error.message}</td></tr>`;
+                abrirModalAlerta("Error de Carga", error.message);
             }
         }
 
@@ -942,7 +857,7 @@
             listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
 
             try {
-                const data = await apiFetch(`/admin/complejos`); // Llama a GET /api/admin/complejos
+                const data = await apiFetch(`/admin/complejos`); 
                 listaElement.innerHTML = '';
                 data.forEach(complejo => {
                     listaElement.innerHTML += `

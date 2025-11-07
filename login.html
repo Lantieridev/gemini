@@ -10,101 +10,132 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="h-full bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    
-    <div class="max-w-md w-full space-y-8">
-        <div>
-            <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
-                Bienvenido
-            </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Inicia sesión o
-                <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">
-                    créa una cuenta nueva
-                </button>
-            </p>
+<body class="h-full bg-gray-100 flex flex-col">
+
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-blue-600">Complejo</span>
+                    <span class="text-2xl font-bold text-gray-700">Deportivo</span>
+                </a>
+                
+                <div>
+                     <a href="index.html" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                        &larr; Volver al inicio
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+                    Bienvenido
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Inicia sesión o
+                    <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">
+                        créa una cuenta nueva
+                    </button>
+                </p>
+            </div>
+
+            <form id="form-login" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="login-email" class="sr-only">Email</label>
+                        <input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email">
+                    </div>
+                    <div>
+                        <label for="login-password" class="sr-only">Contraseña</label>
+                        <input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Contraseña">
+                    </div>
+                </div>
+
+                <div id="login-error" class="text-red-600 text-sm hidden"></div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Iniciar Sesión
+                    </button>
+                </div>
+            </form>
+
+            <form id="form-registro" class="mt-8 space-y-6 hidden">
+                <div class="rounded-md shadow-sm space-y-2">
+                    <input id="reg-nombre" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Nombre">
+                    <input id="reg-apellido" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Apellido">
+                    <input id="reg-documento" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Documento (DNI)">
+                    <input id="reg-telefono" type="tel" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Teléfono (ej: 351... )">
+                    <input id="reg-email" type="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Email">
+                    <input id="reg-password" type="password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Contraseña (mín 6 caracteres)">
+                </div>
+                
+                <div id="registro-error" class="text-red-600 text-sm hidden"></div>
+                <div id="registro-exito" class="text-green-600 text-sm hidden"></div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Crear Cuenta
+                    </button>
+                </div>
+            </form>
         </div>
+    </main>
 
-        <form id="form-login" class="mt-8 space-y-6">
-            <input type="hidden" name="remember" value="true">
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="login-email" class="sr-only">Email</label>
-                    <input id="login-email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email">
-                </div>
-                <div>
-                    <label for="login-password" class="sr-only">Contraseña</label>
-                    <input id="login-password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Contraseña">
-                </div>
-            </div>
+    <footer class="bg-gray-800 text-gray-400">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p>&copy; 2025 Complejo Deportivo. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
-            <div id="login-error" class="text-red-600 text-sm hidden"></div>
-
-            <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Iniciar Sesión
-                </button>
-            </div>
-        </form>
-
-        <form id="form-registro" class="mt-8 space-y-6 hidden">
-            <div class="rounded-md shadow-sm space-y-2">
-                <input id="reg-nombre" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Nombre">
-                <input id="reg-apellido" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Apellido">
-                <input id="reg-documento" type="text" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Documento (DNI)">
-                <input id="reg-telefono" type="tel" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Teléfono (ej: 351... )">
-                <input id="reg-email" type="email" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Email">
-                <input id="reg-password" type="password" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Contraseña (mín 6 caracteres)">
-            </div>
-            
-            <div id="registro-error" class="text-red-600 text-sm hidden"></div>
-            <div id="registro-exito" class="text-green-600 text-sm hidden"></div>
-
-            <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    Crear Cuenta
-                </button>
-            </div>
-        </form>
-
-        <p class="mt-2 text-center text-sm text-gray-600">
-            <a href="index.html" class="font-medium text-blue-600 hover:text-blue-500">
-                &larr; Volver al inicio
-            </a>
-        </p>
-
-    </div>
+    <script src="auth.js"></script>
 
     <script>
-        const API_BASE_URL = "http://localhost:5026/api"; // Usa la URL de tu API
-
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // Si el usuario ya está logueado, que no vea el login.
+            // Lo redirigimos a donde corresponda.
+            if (AuthService.isLoggedIn()) {
+                const rol = AuthService.getUserData().rol;
+                if (rol === 'Admin' || rol === 'Empleado') {
+                    window.location.href = 'empleado.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+                return; // Detiene la ejecución para que no cargue los listeners
+            }
+
+
             const formLogin = document.getElementById('form-login');
             const formRegistro = document.getElementById('form-registro');
             const btnToggle = document.getElementById('btn-toggle-register');
             const titulo = document.querySelector('h2');
             const parrafo = document.querySelector('p.mt-2');
+            const btnToggleSelector = '#btn-toggle-register';
 
             // --- Toggle entre Login y Registro ---
-            btnToggle.addEventListener('click', () => {
+            function toggleForms() {
                 if (formLogin.classList.contains('hidden')) {
                     // Cambiar a Login
                     formLogin.classList.remove('hidden');
                     formRegistro.classList.add('hidden');
                     titulo.textContent = 'Bienvenido';
                     parrafo.innerHTML = 'Inicia sesión o <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">créa una cuenta nueva</button>';
-                    // Volver a añadir el listener al botón recreado
-                    document.getElementById('btn-toggle-register').addEventListener('click', arguments.callee);
+                    document.querySelector(btnToggleSelector).addEventListener('click', toggleForms);
                 } else {
                     // Cambiar a Registro
                     formLogin.classList.add('hidden');
                     formRegistro.classList.remove('hidden');
                     titulo.textContent = 'Crear cuenta nueva';
                     parrafo.innerHTML = '¿Ya tienes cuenta? <button id="btn-toggle-register" class="font-medium text-blue-600 hover:text-blue-500">Inicia sesión</button>';
-                    // Volver a añadir el listener al botón recreado
-                    document.getElementById('btn-toggle-register').addEventListener('click', arguments.callee);
+                    document.querySelector(btnToggleSelector).addEventListener('click', toggleForms);
                 }
-            });
+            }
+            btnToggle.addEventListener('click', toggleForms);
 
             // --- Handler de Login ---
             formLogin.addEventListener('submit', async (e) => {
@@ -112,43 +143,22 @@
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
                 const errorEl = document.getElementById('login-error');
+                const submitButton = formLogin.querySelector('button[type="submit"]');
+                
                 errorEl.classList.add('hidden');
+                submitButton.textContent = 'Iniciando...';
+                submitButton.disabled = true;
 
                 try {
-                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || 'Credenciales incorrectas');
-                    }
-
-                    const data = await response.json(); // Este es tu LoginResponseDTO
-
-                    // --- ¡AQUÍ ESTÁ LA MAGIA! ---
-                    // Guardamos todo en localStorage
-                    localStorage.setItem('jwtToken', data.token);
-                    localStorage.setItem('userEmail', data.email);
-                    localStorage.setItem('userRol', data.rol);
-                    
-                    // Guardamos el clienteId (¡Gracias al ajuste que hicimos en la API!)
-                    if(data.clienteId) {
-                        localStorage.setItem('clienteId', data.clienteId);
-                    }
-
-                    // --- Redirección por ROL ---
-                    if (data.rol === 'Admin' || data.rol === 'Empleado') {
-                        window.location.href = 'empleado.html'; // Al panel de admin
-                    } else {
-                        window.location.href = 'index.html'; // Al home
-                    }
-
+                    // Usamos la función del auth.js
+                    await AuthService.login(email, password);
+                    // Si tiene éxito, la función de login redirige automáticamente.
+                
                 } catch (error) {
                     errorEl.textContent = error.message;
                     errorEl.classList.remove('hidden');
+                    submitButton.textContent = 'Iniciar Sesión';
+                    submitButton.disabled = false;
                 }
             });
 
@@ -157,8 +167,12 @@
                 e.preventDefault();
                 const errorEl = document.getElementById('registro-error');
                 const exitoEl = document.getElementById('registro-exito');
+                const submitButton = formRegistro.querySelector('button[type="submit"]');
+
                 errorEl.classList.add('hidden');
                 exitoEl.classList.add('hidden');
+                submitButton.textContent = 'Creando cuenta...';
+                submitButton.disabled = true;
 
                 // Este es el RegisterClienteDTO
                 const dto = {
@@ -171,19 +185,8 @@
                 };
 
                 try {
-                    // Llamamos al endpoint de registro
-                    const response = await fetch(`${API_BASE_URL}/account/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dto)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || 'Error al registrar.');
-                    }
-
-                    // const nuevoUsuario = await response.json();
+                    // Usamos la función del auth.js
+                    await AuthService.register(dto);
                     
                     // Éxito
                     exitoEl.textContent = '¡Cuenta creada! Por favor, inicia sesión.';
@@ -196,13 +199,16 @@
                 } catch (error) {
                     errorEl.textContent = error.message;
                     errorEl.classList.remove('hidden');
+                } finally {
+                    submitButton.textContent = 'Crear Cuenta';
+                    submitButton.disabled = false;
                 }
             });
 
             // --- Check de URL ---
-            // Si el usuario viene de "Registrarse", muestra el form de registro
+            // Si el usuario viene de "Registrarse" (ej: index.html#registro), muestra el form de registro
             if(window.location.hash === '#registro') {
-                btnToggle.click();
+                toggleForms();
             }
         });
     </script>
