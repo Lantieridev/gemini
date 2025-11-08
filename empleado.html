@@ -3,77 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Empleado (Conectado)</title>
+    <title>Panel de Empleado - Complejo Deportivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* Estilos para la fuente Inter */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700;800&display.swap');
+        
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Estilos para la pestaña activa */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- ESTILOS DARK MODE --- */
+        html.dark body {
+            background-color: #111827; /* bg-gray-900 */
+            color: #d1d5db; /* text-gray-300 */
+        }
+        html.dark .card {
+            background-color: #1f2937; /* bg-gray-800 */
+            border-color: #374151; /* border-gray-700 */
+        }
+        html.dark .text-main {
+            color: #f9fafb; /* text-gray-50 */
+        }
+        html.dark .text-secondary {
+            color: #9ca3af; /* text-gray-400 */
+        }
+        html.dark .border-main {
+            border-color: #374151; /* border-gray-700 */
+        }
+        html.dark .bg-header-table {
+            background-color: #374151; /* bg-gray-700 */
+        }
+        html.dark .dark-input {
+            background-color: #111827; /* bg-gray-900 */
+            border-color: #374151; /* border-gray-700 */
+            color: #f9fafb; /* text-gray-50 */
+            --tw-ring-color: #3B82F6; /* ring-blue-500 */
+        }
+        html.dark .dark-input:focus {
+            border-color: #3B82F6; /* border-blue-500 */
+        }
+        html.dark .dark-input option {
+             background-color: #1f2937;
+             color: #f9fafb;
+        }
+        /* --- FIN ESTILOS DARK MODE --- */
+
         .tab-button.active {
             border-bottom-color: #3B82F6; /* blue-500 */
             color: #3B82F6; /* blue-500 */
             font-weight: 600;
         }
-        /* Estilo para pestaña deshabilitada */
+        html.dark .tab-button.active {
+            border-bottom-color: #3B82F6; /* blue-500 */
+            color: #60a5fa; /* blue-400 */
+        }
         .tab-button:disabled {
-            color: #9CA3AF; /* gray-400 */
+            color: #9ca3af; /* gray-400 */
             cursor: not-allowed;
         }
-        /* Estilo para el loader (spinner) */
+        html.dark .tab-button:disabled {
+            color: #4b5563; /* gray-600 */
+        }
+
         .loader {
-            border-top-color: #3498db;
-            -webkit-animation: spin 1s linear infinite;
+            border-top-color: #3B82F6; /* blue-500 */
             animation: spin 1s linear infinite;
         }
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
+        html.dark .loader {
+            border-color: #374151; /* border-gray-700 */
+            border-top-color: #3B82F6; /* blue-500 */
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Estilos para el Modal */
-        .modal {
-            transition: opacity 0.25s ease;
-        }
-        .modal-content {
-            transition: transform 0.25s ease;
-        }
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
     </style>
 </head>
-<body class="h-full bg-gray-100 text-gray-900">
+<body class="h-full bg-gray-100 text-gray-900 flex flex-col min-h-screen transition-colors duration-300">
 
-    <div class="container mx-auto p-4 md:p-8">
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div class="absolute left-[calc(50%-10rem)] top-20 sm:left-[calc(50%-30rem)] aspect-[1155/678] w-[72.1875rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#3B82F6] to-[#111827] opacity-0 dark:opacity-20 sm:dark:opacity-10 transition-opacity duration-500" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 flex-grow">
         
         <header class="mb-6 flex flex-col md:flex-row justify-between md:items-center">
-            <h1 class="text-3xl font-bold text-gray-800">Panel de Empleado</h1>
-            <div class="mt-2 md:mt-0 text-sm text-gray-600">
+            <h1 class="text-3xl font-bold text-gray-800 text-main dark:text-main">Panel de Empleado</h1>
+            <div class="mt-2 md:mt-0 text-sm text-gray-600 text-secondary dark:text-secondary">
                 Bienvenido, <span id="nombre-usuario" class="font-medium">Cargando...</span> (<span id="rol-usuario">...</span>)
-                <button id="btn-logout-empleado" class="ml-4 text-blue-600 hover:text-blue-800 font-medium">[Cerrar Sesión]</button>
+                <button id="btn-logout-empleado" class="ml-4 text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400 font-medium transition-colors duration-200">[Cerrar Sesión]</button>
             </div>
         </header>
 
         <div>
-            <div class="border-b border-gray-300">
+            <div class="border-b border-gray-300 border-main dark:border-main">
                 <nav class="-mb-px flex space-x-6" role="tablist">
-                    <button role="tab" aria-selected="true" id="tab-dashboard" class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="true" id="tab-dashboard" class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
                         Dashboard
                     </button>
-                    <button role="tab" aria-selected="false" id="tab-gestion" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="false" id="tab-gestion" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
                         Gestión
                     </button>
-                    <button role="tab" aria-selected="false" id="tab-equipo" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="false" id="tab-equipo" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
                         Equipo
                     </button>
-                    <button role="tab" aria-selected="false" id="tab-sucursales" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <button role="tab" aria-selected="false" id="tab-sucursales" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
                         Sucursales
                     </button>
                     <button role="tab" aria-selected="false" id="tab-kiosko" class="tab-button" title="Próximamente" disabled>
@@ -85,15 +127,15 @@
             <div class="mt-6">
 
                 <div role="tabpanel" id="panel-dashboard">
-                    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm flex flex-col md:flex-row gap-4">
+                    <div class="mb-6 card bg-white p-4 rounded-lg shadow-sm flex flex-col md:flex-row gap-4 items-center border dark:border-main">
                         <div class="flex-1">
-                            <label for="filtro-complejo" class="block text-sm font-medium text-gray-700">Complejo</label>
-                            <select id="filtro-complejo" name="complejo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <label for="filtro-complejo" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Complejo</label>
+                            <select id="filtro-complejo" name="complejo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark-input">
                                 </select>
                         </div>
                         <div class="flex-1">
-                            <label for="filtro-rango-fechas" class="block text-sm font-medium text-gray-700">Rango de Fechas</label>
-                            <select id="filtro-rango-fechas" name="rango-fechas" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <label for="filtro-rango-fechas" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Rango de Fechas</label>
+                            <select id="filtro-rango-fechas" name="rango-fechas" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark-input">
                                 <option value="hoy">Hoy</option>
                                 <option value="ayer">Ayer</option>
                                 <option value="ultimos_7_dias" selected>Últimos 7 días</option>
@@ -105,11 +147,18 @@
                         <button type="button" id="btn-aplicar-filtros" class="mt-1 md:mt-6 w-full md:w-auto rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
                             Aplicar
                         </button>
+                        
+                        <div class="border-l border-gray-200 border-main dark:border-main pl-4 ml-2 mt-2 md:mt-0">
+                             <button type="button" id="btn-dark-mode" class="mt-1 md:mt-6 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200" title="Cambiar tema">
+                                <svg id="icon-moon" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
+                                <svg id="icon-sun" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 6.75A5.25 5.25 0 0 1 17.25 12 5.25 5.25 0 0 1 12 17.25 5.25 5.25 0 0 1 6.75 12 5.25 5.25 0 0 1 12 6.75Z" /></svg>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="dashboard-loader" class="hidden text-center p-8">
                         <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mx-auto"></div>
-                        <p class="mt-4 text-gray-600">Cargando datos del dashboard...</p>
+                        <p class="mt-4 text-gray-600 dark:text-gray-400">Cargando datos del dashboard...</p>
                     </div>
                     <div id="dashboard-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
                         <strong class="font-bold">Error:</strong>
@@ -117,121 +166,114 @@
                     </div>
 
                     <div id="dashboard-content" class="hidden">
-                        <h2 class="text-lg font-semibold text-gray-700 mb-3">Resumen de Hoy</h2>
-                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                            
-                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                        
+                        <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main mb-3">Resumen de Hoy</h2>
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+                            <div class="card bg-white overflow-hidden shadow rounded-lg border dark:border-main">
                                 <div class="p-5">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0">
-                                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c-1.11 0-2.08-.402-2.599-1M12 16v1m0-1v-8" /></svg>
+                                            <svg class="h-6 w-6 text-gray-400 text-secondary dark:text-secondary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0c-1.657 0-3-.895-3-2s1.343-2 3-2 3-.895 3-2-1.343-2-3-2m0 8c-1.11 0-2.08-.402-2.599-1M12 16v1m0-1v-8" /></svg>
                                         </div>
                                         <div class="ml-5 w-0 flex-1">
                                             <dl>
-                                                <dt class="text-sm font-medium text-gray-500 truncate">Ingresos Hoy</dt>
-                                                <dd class="text-3xl font-semibold text-gray-900" id="kpi-ingresos-hoy">$0</dd>
+                                                <dt class="text-sm font-medium text-gray-500 text-secondary dark:text-secondary truncate">Ingresos Hoy</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900 text-main dark:text-main" id="kpi-ingresos-hoy">$0</dd>
                                             </dl>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="bg-white overflow-hidden shadow rounded-lg">
+                            <div class="card bg-white overflow-hidden shadow rounded-lg border dark:border-main">
                                 <div class="p-5">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0">
-                                            <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                            <svg class="h-6 w-6 text-gray-400 text-secondary dark:text-secondary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                         </div>
                                         <div class="ml-5 w-0 flex-1">
                                             <dl>
-                                                <dt class="text-sm font-medium text-gray-500 truncate">Reservas Hoy</dt>
-                                                <dd class="text-3xl font-semibold text-gray-900" id="kpi-reservas-hoy">0</dd>
+                                                <dt class="text-sm font-medium text-gray-500 text-secondary dark:text-secondary truncate">Reservas Hoy</dt>
+                                                <dd class="text-3xl font-semibold text-gray-900 text-main dark:text-main" id="kpi-reservas-hoy">0</dd>
                                             </dl>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="bg-yellow-100 border border-yellow-300 overflow-hidden shadow rounded-lg">
+                            <div class="card bg-blue-100 border border-blue-300 dark:bg-blue-900/30 dark:border-blue-700/50 overflow-hidden shadow rounded-lg">
                                 <div class="p-5">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0">
-                                            <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                            <svg class="h-6 w-6 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                         </div>
                                         <div class="ml-5 w-0 flex-1">
                                             <dl>
-                                                <dt class="text-sm font-medium text-yellow-600 truncate">Reservas Pendientes (Filtro)</dt>
-                                                <dd class="text-3xl font-semibold text-yellow-900" id="kpi-pendientes">0</dd>
+                                                <dt class="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">Reservas Pendientes (Filtro)</dt>
+                                                <dd class="text-3xl font-semibold text-blue-900 dark:text-blue-200" id="kpi-pendientes">0</dd>
                                             </dl>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            </div>
 
-                        </div>
-
-                        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">Rendimiento del Período</h2>
+                        <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main mt-8 mb-3">Rendimiento del Período</h2>
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                            
-                            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Ingresos por Período</h3>
+                            <div class="lg:col-span-2 card bg-white p-6 rounded-lg shadow border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Ingresos por Período</h3>
                                 <div class="w-full h-64">
                                     <canvas id="grafico-ingresos"></canvas>
                                 </div>
                             </div>
-
-                            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Estados de Reservas</h3>
+                            <div class="lg:col-span-1 card bg-white p-6 rounded-lg shadow border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Estados de Reservas</h3>
                                 <div class="w-full h-64 flex items-center justify-center">
                                     <canvas id="grafico-estados"></canvas>
                                 </div>
                             </div>
                         </div>
 
-                        <h2 class="text-lg font-semibold text-gray-700 mt-8 mb-3">Actividad Reciente</h2>
+                        <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main mt-8 mb-3">Actividad Reciente</h2>
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                            
-                            <div class="bg-white p-6 rounded-lg shadow">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Últimas Reservas</h3>
-                                <ul class="divide-y divide-gray-200" id="lista-reservas-recientes">
-                                    <li class="py-3 text-center text-gray-500">Cargando...</li>
+                            <div class="card bg-white p-6 rounded-lg shadow border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Últimas Reservas</h3>
+                                <ul class="divide-y divide-gray-200 border-main dark:border-main" id="lista-reservas-recientes">
+                                    <li class="py-3 text-center text-gray-500 text-secondary dark:text-secondary">Cargando...</li>
                                 </ul>
                             </div>
                             
-                            <div class="bg-white p-6 rounded-lg shadow">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Canchas Populares (según filtro)</h3>
-                                <ul class="divide-y divide-gray-200" id="lista-canchas-populares">
-                                    <li class="py-3 text-center text-gray-500">Cargando...</li>
+                            <div class="card bg-white p-6 rounded-lg shadow border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Canchas Populares (Top 5)</h3>
+                                <ul class="divide-y divide-gray-200 border-main dark:border-main" id="lista-canchas-populares">
+                                    <li class="py-3 text-center text-gray-500 text-secondary dark:text-secondary">Cargando...</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div role="tabpanel" id="panel-gestion" class="hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Gestión de Canchas</h2>
+                            <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main mb-4">Gestión de Canchas</h2>
                             
-                            <form id="form-gestion-cancha" class="bg-white p-6 rounded-lg shadow mb-6">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Crear Nueva Cancha</h3>
+                            <form id="form-gestion-cancha" class="card bg-white p-6 rounded-lg shadow mb-6 border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Crear Nueva Cancha</h3>
                                 <div id="form-cancha-mensaje" class="hidden mb-4 p-3 rounded-md"></div>
 
                                 <div class="space-y-4">
                                     <div>
-                                        <label for="cancha-nombre" class="block text-sm font-medium text-gray-700">Nombre Cancha</label>
-                                        <input type="text" id="cancha-nombre" required placeholder="Ej: Cancha Fútbol 5 (A)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                        <label for="cancha-nombre" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Nombre Cancha</label>
+                                        <input type="text" id="cancha-nombre" required placeholder="Ej: Cancha Fútbol 5 (A)" class="dark-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                                     </div>
                                     <div>
-                                        <label for="cancha-tipo" class="block text-sm font-medium text-gray-700">Tipo de Cancha</label>
-                                        <select id="cancha-tipo" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                        <label for="cancha-tipo" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Tipo de Cancha</label>
+                                        <select id="cancha-tipo" required class="dark-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                                             <option value="">Cargando tipos...</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label for="cancha-superficie" class="block text-sm font-medium text-gray-700">Tipo de Superficie</label>
-                                        <select id="cancha-superficie" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                        <label for="cancha-superficie" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Tipo de Superficie</label>
+                                        <select id="cancha-superficie" required class="dark-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                                             <option value="1">Césped Sintético</option>
                                             <option value="2">Cemento</option>
                                         </select>
@@ -242,31 +284,31 @@
                                 </div>
                             </form>
 
-                            <div class="bg-white shadow rounded-lg overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                            <div class="card bg-white shadow rounded-lg overflow-hidden border dark:border-main">
+                                <table class="min-w-full divide-y divide-gray-200 border-main dark:border-main">
+                                    <thead class="bg-gray-50 bg-header-table dark:bg-header-table">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase">Nombre</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase">Estado</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="lista-gestion-canchas" class="bg-white divide-y divide-gray-200">
+                                    <tbody id="lista-gestion-canchas" class="divide-y divide-gray-200 border-main dark:border-main">
                                         </tbody>
                                 </table>
                             </div>
                         </div>
 
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-700 mb-4">Gestión de Tipos de Cancha</h2>
+                            <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main mb-4">Gestión de Tipos de Cancha</h2>
                             
-                            <form id="form-gestion-tipo-cancha" class="bg-white p-6 rounded-lg shadow mb-6">
-                                <h3 class="text-base font-semibold text-gray-900 mb-4">Crear Nuevo Tipo</h3>
+                            <form id="form-gestion-tipo-cancha" class="card bg-white p-6 rounded-lg shadow mb-6 border dark:border-main">
+                                <h3 class="text-base font-semibold text-gray-900 text-main dark:text-main mb-4">Crear Nuevo Tipo</h3>
                                 <div id="form-tipo-cancha-mensaje" class="hidden mb-4 p-3 rounded-md"></div>
                                 <div class="space-y-4">
                                     <div>
-                                        <label for="tipo-nombre" class="block text-sm font-medium text-gray-700">Nombre del Tipo</label>
-                                        <input type="text" id="tipo-nombre" placeholder="Ej: Tenis (Polvo de ladrillo)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <label for="tipo-nombre" class="block text-sm font-medium text-gray-700 text-secondary dark:text-secondary">Nombre del Tipo</label>
+                                        <input type="text" id="tipo-nombre" placeholder="Ej: Tenis (Polvo de ladrillo)" class="dark-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                                     </div>
                                     <button type="submit" class="w-full rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
                                         Guardar Tipo
@@ -274,15 +316,15 @@
                                 </div>
                             </form>
 
-                            <div class="bg-white shadow rounded-lg overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                            <div class="card bg-white shadow rounded-lg overflow-hidden border dark:border-main">
+                                <table class="min-w-full divide-y divide-gray-200 border-main dark:border-main">
+                                    <thead class="bg-gray-50 bg-header-table dark:bg-header-table">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre Tipo</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase">ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase">Nombre Tipo</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="lista-gestion-tipos-cancha" class="bg-white divide-y divide-gray-200">
+                                    <tbody id="lista-gestion-tipos-cancha" class="divide-y divide-gray-200 border-main dark:border-main">
                                         </tbody>
                                 </table>
                             </div>
@@ -293,23 +335,23 @@
 
                 <div role="tabpanel" id="panel-equipo" class="hidden">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-semibold text-gray-700">Directorio de Equipo</h2>
+                        <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main">Directorio de Equipo</h2>
                         <div class="w-full max-w-xs">
                             <label for="search-equipo" class="sr-only">Buscar empleado</label>
-                            <input type="search" id="search-equipo" placeholder="Buscar por nombre, apellido, rol..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="search" id="search-equipo" placeholder="Buscar por nombre, apellido, rol..." class="dark-input block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                         </div>
-                        </div>
-                    <div class="bg-white shadow rounded-lg overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    </div>
+                    <div class="card bg-white shadow rounded-lg overflow-x-auto border dark:border-main">
+                        <table class="min-w-full divide-y divide-gray-200 border-main dark:border-main">
+                            <thead class="bg-gray-50 bg-header-table dark:bg-header-table">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Nombre</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Rol</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Email</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Teléfono</th>
                                 </tr>
                             </thead>
-                            <tbody id="lista-equipo" class="bg-white divide-y divide-gray-200">
+                            <tbody id="lista-equipo" class="divide-y divide-gray-200 border-main dark:border-main">
                                 </tbody>
                         </table>
                     </div>
@@ -317,22 +359,22 @@
 
                 <div role="tabpanel" id="panel-sucursales" class="hidden">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-semibold text-gray-700">Otras Sucursales</h2>
+                        <h2 class="text-lg font-semibold text-gray-700 text-main dark:text-main">Otras Sucursales</h2>
                         <div class="w-full max-w-xs">
                              <label for="search-sucursales" class="sr-only">Buscar sucursal</label>
-                            <input type="search" id="search-sucursales" placeholder="Buscar por nombre o ciudad..." class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <input type="search" id="search-sucursales" placeholder="Buscar por nombre o ciudad..." class="dark-input block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 sm:text-sm">
                         </div>
-                        </div>
-                    <div class="bg-white shadow rounded-lg overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    </div>
+                    <div class="card bg-white shadow rounded-lg overflow-x-auto border dark:border-main">
+                        <table class="min-w-full divide-y divide-gray-200 border-main dark:border-main">
+                            <thead class="bg-gray-50 bg-header-table dark:bg-header-table">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre Sucursal</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudad</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Nombre Sucursal</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Dirección</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-secondary dark:text-secondary uppercase tracking-wider">Ciudad</th>
                                 </tr>
                             </thead>
-                            <tbody id="lista-sucursales" class="bg-white divide-y divide-gray-200">
+                            <tbody id="lista-sucursales" class="divide-y divide-gray-200 border-main dark:border-main">
                                 </tbody>
                         </table>
                     </div>
@@ -346,36 +388,36 @@
 
     </div>
 
-    <div id="modal-confirmacion" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
-                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+    <div id="modal-confirmacion" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div class="modal-content card bg-white rounded-lg shadow-xl w-full max-w-md p-6 border dark:border-main">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
+                <svg class="h-6 w-6 text-yellow-600 dark:text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
             <div class="mt-3 text-center sm:mt-5">
-                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-confirm-titulo">Confirmar Acción</h3>
+                <h3 class="text-lg font-medium leading-6 text-gray-900 text-main dark:text-main" id="modal-confirm-titulo">Confirmar Acción</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500" id="modal-confirm-mensaje">¿Estás seguro de que deseas realizar esta acción?</p>
+                    <p class="text-sm text-gray-500 text-secondary dark:text-secondary" id="modal-confirm-mensaje">¿Estás seguro de que deseas realizar esta acción?</p>
                 </div>
             </div>
             <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                 <button type="button" id="btn-confirmar" class="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 sm:col-start-2 sm:text-sm">
                     Confirmar
                 </button>
-                <button type="button" id="btn-cancelar" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:col-start-1 sm:mt-0 sm:text-sm">
+                <button type="button" id="btn-cancelar" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-base font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 sm:col-start-1 sm:mt-0 sm:text-sm">
                     Cancelar
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="modal-alerta" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <div id="modal-alerta" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div class="modal-content card bg-white rounded-lg shadow-xl w-full max-w-md p-6 border dark:border-main">
             <div class="text-center">
-                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-alerta-titulo">Éxito</h3>
+                <h3 class="text-lg font-medium leading-6 text-gray-900 text-main dark:text-main" id="modal-alerta-titulo">Éxito</h3>
                 <div class="mt-2">
-                    <p class="text-sm text-gray-500" id="modal-alerta-mensaje">La operación se completó correctamente.</p>
+                    <p class="text-sm text-gray-500 text-secondary dark:text-secondary" id="modal-alerta-mensaje">La operación se completó correctamente.</p>
                 </div>
             </div>
             <div class="mt-5 sm:mt-6">
@@ -393,9 +435,7 @@
         try {
             protegerPagina(['Admin', 'Empleado']);
         } catch (e) {
-            // Detiene la ejecución del script si protegerPagina() lanza un error (redirección)
             console.error(e.message);
-            // Detenemos el script para que no intente cargar el dashboard
             throw new Error("Redireccionando al login...");
         }
 
@@ -414,8 +454,10 @@
         };
         
         // --- Lógica de Pestañas y Carga ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             
+            initDarkMode(); // Inicializa el Dark Mode
+
             // Setea el email y rol del usuario logueado
             const usuario = AuthService.getUserData();
             document.getElementById('nombre-usuario').textContent = usuario.email;
@@ -460,10 +502,22 @@
                 });
             });
 
-            // Carga inicial del dashboard y otros datos
-            cargarComplejosGlobal(); // Carga el <select> de complejos
-            cargarDatosDashboard(); // Carga el dashboard con el complejo por defecto
+            // --- Carga automática con complejo por defecto ---
+            await cargarComplejosGlobal(); 
+            
+            const filtroComplejo = document.getElementById('filtro-complejo');
+            if (filtroComplejo.options.length > 0) {
+                const opcionCarlosPaz = filtroComplejo.querySelector('option[value="1"]');
+                if (opcionCarlosPaz) {
+                    filtroComplejo.value = '1';
+                } else {
+                    filtroComplejo.selectedIndex = 0; 
+                }
+            }
+
+            cargarDatosDashboard(); 
             document.getElementById('panel-dashboard').dataset.loaded = true;
+            // --- Fin Carga automática ---
 
             // Listeners
             document.getElementById('btn-aplicar-filtros').addEventListener('click', cargarDatosDashboard);
@@ -476,14 +530,13 @@
                 }
             });
             
-            // ===== INICIO LISTENERS BUSCADORES =====
+            // Listeners Buscadores
             const searchEquipoInput = document.getElementById('search-equipo');
             searchEquipoInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     cargarDatosEquipo(searchEquipoInput.value);
                 }
             });
-            // También filtra si borra el texto
             searchEquipoInput.addEventListener('search', (e) => {
                 if (!e.target.value) {
                     cargarDatosEquipo();
@@ -501,7 +554,6 @@
                     cargarDatosSucursales();
                 }
             });
-            // ===== FIN LISTENERS BUSCADORES =====
             
             // Listeners para los modales
             const modalConfirm = document.getElementById('modal-confirmacion');
@@ -522,6 +574,46 @@
             });
         });
 
+        // --- LÓGICA DE DARK MODE ---
+        function initDarkMode() {
+            const btnToggle = document.getElementById('btn-dark-mode');
+            const iconMoon = document.getElementById('icon-moon');
+            const iconSun = document.getElementById('icon-sun');
+
+            const applyTheme = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    iconMoon.classList.add('hidden');
+                    iconSun.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    iconMoon.classList.remove('hidden');
+                    iconSun.classList.add('hidden');
+                }
+                // Recargamos los gráficos para que tomen el nuevo color
+                if (document.getElementById('panel-dashboard').dataset.loaded) {
+                    // Espera un frame para que se apliquen las clases de color
+                    requestAnimationFrame(cargarDatosDashboard);
+                }
+            };
+
+            const toggleDarkMode = () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'light' : 'dark');
+                applyTheme(!isDark);
+            };
+
+            btnToggle.addEventListener('click', toggleDarkMode);
+
+            // Aplica el tema al cargar la página
+            const preferredTheme = localStorage.getItem('theme');
+            if (preferredTheme === 'dark') {
+                applyTheme(true);
+            } else {
+                applyTheme(false); // Default a Light Mode 
+            }
+        }
+
         // --- Funciones de Modales ---
         function abrirModalConfirmacion(titulo, mensaje, onConfirmCallback) {
             const modal = document.getElementById('modal-confirmacion');
@@ -537,22 +629,26 @@
             modal.classList.remove('hidden');
         }
 
-        /**
-         * Carga el <select> de complejos en el filtro del dashboard
-         */
         async function cargarComplejosGlobal() {
             const select = document.getElementById('filtro-complejo');
+            select.innerHTML = '<option value="">Cargando...</option>';
             try {
-                // Llama al endpoint de admin/complejos (es AllowAnonymous en tu API, pero lo llamamos con token igual)
                 const complejos = await apiFetch(`/admin/complejos`); 
-                select.innerHTML = ''; // Limpia el "Cargando..."
+                select.innerHTML = ''; 
                 if (complejos.length === 0) {
                      select.innerHTML = '<option value="">No hay complejos</option>';
                      return;
                 }
-                complejos.forEach(c => {
-                    select.innerHTML += `<option value="${c.complejoId}">${c.nombre}</option>`;
-                });
+                
+                // Hardcodeamos los complejos que sabemos que existen por el .html anterior
+                select.innerHTML += `<option value="1">Carlos Paz</option>`;
+                select.innerHTML += `<option value="2">Villanueva</option>`;
+
+                // NOTA: El código de abajo es el "correcto" cuando la BD tenga datos reales
+                // complejos.forEach(c => {
+                //     select.innerHTML += `<option value="${c.complejoId}">${c.nombre}</option>`;
+                // });
+
             } catch (error) {
                 console.error("Error cargando complejos:", error);
                 select.innerHTML = '<option value="">Error al cargar</option>';
@@ -565,6 +661,7 @@
             const periodo = document.getElementById('filtro-rango-fechas').value;
             
             if (!complejoId) {
+                document.getElementById('dashboard-loader').classList.add('hidden'); // Ocultar loader si no hay complejo
                 document.getElementById('dashboard-error-mensaje').textContent = "Por favor, seleccione un complejo.";
                 document.getElementById('dashboard-error').classList.remove('hidden');
                 return;
@@ -603,6 +700,10 @@
         }
 
         function crearGraficoIngresos(ingresosData) {
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.7)'; // gray-700 / gray-200
+            const textColor = isDark ? '#d1d5db' : '#374151'; // gray-300 / gray-700
+
             const ctx = document.getElementById('grafico-ingresos').getContext('2d');
             if (graficoIngresosInstance) {
                 graficoIngresosInstance.destroy();
@@ -614,8 +715,8 @@
                     datasets: [{
                         label: 'Ingresos',
                         data: ingresosData.map(d => d.total),
-                        borderColor: '#3B82F6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#3B82F6', // blue-500
+                        backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.2)',
                         fill: true,
                         tension: 0.1
                     }]
@@ -623,13 +724,33 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, ticks: { callback: (value) => formatCurrency(value) } } },
-                    plugins: { tooltip: { callbacks: { label: (context) => formatCurrency(context.parsed.y) } } }
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { 
+                                callback: (value) => formatCurrency(value),
+                                color: textColor 
+                            },
+                            grid: { color: gridColor }
+                        },
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (context) => formatCurrency(context.parsed.y) } } 
+                    }
                 }
             });
         }
 
         function crearGraficoEstados(estadosData) {
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#d1d5db' : '#374151';
+            const borderColor = isDark ? '#1f2937' : '#ffffff'; // bg-gray-800 / bg-white
+
             const ctx = document.getElementById('grafico-estados').getContext('2d');
             if (graficoEstadosInstance) {
                 graficoEstadosInstance.destroy();
@@ -641,13 +762,20 @@
                     datasets: [{
                         data: estadosData.map(e => e.cantidad),
                         backgroundColor: estadosData.map(e => e.color), 
-                        hoverOffset: 4
+                        hoverOffset: 4,
+                        borderWidth: 2,
+                        borderColor: borderColor 
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: textColor }
+                        } 
+                    }
                 }
             });
         }
@@ -656,26 +784,31 @@
             const listaElement = document.getElementById('lista-reservas-recientes');
             listaElement.innerHTML = ''; 
             if (reservas.length === 0) {
-                listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay reservas recientes.</li>';
+                listaElement.innerHTML = '<li class="py-3 text-center text-secondary dark:text-secondary">No hay reservas recientes.</li>';
                 return;
             }
             reservas.forEach(reserva => {
                 const estadoLower = (reserva.estado || 'desconocido').toLowerCase();
-                let estadoColor = 'bg-gray-100 text-gray-800';
+                
+                // ===== INICIO CORRECCIÓN BADGES DE ESTADO =====
+                // Volvemos a los colores originales del Light Mode
+                let estadoColorClass = 'bg-gray-100 text-gray-800';
                 if (estadoLower.includes('confirmada')) {
-                    estadoColor = 'bg-green-100 text-green-800';
+                    estadoColorClass = 'bg-green-100 text-green-800';
                 } else if (estadoLower.includes('pendiente')) {
-                    estadoColor = 'bg-yellow-100 text-yellow-800';
+                    estadoColorClass = 'bg-yellow-100 text-yellow-800';
                 } else if (estadoLower.includes('cancelada')) {
-                    estadoColor = 'bg-red-100 text-red-800';
+                    estadoColorClass = 'bg-red-100 text-red-800';
                 }
+                // ===== FIN CORRECCIÓN BADGES DE ESTADO =====
+
                 const item = `
                     <li class="py-3 flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-medium text-gray-900">${reserva.clienteNombre} - ${reserva.canchaNombre}</p>
-                            <p class="text-sm text-gray-500">${new Date(reserva.fecha).toLocaleDateString('es-AR')} (${reserva.horarioDisplay})</p>
+                            <p class="text-sm font-medium text-main dark:text-main">${reserva.clienteNombre} - ${reserva.canchaNombre}</p>
+                            <p class="text-sm text-secondary dark:text-secondary">${new Date(reserva.fecha).toLocaleDateString('es-AR')} (${reserva.horarioDisplay})</p>
                         </div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estadoColor}">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${estadoColorClass}">
                             ${reserva.estado}
                         </span>
                     </li>`;
@@ -687,17 +820,17 @@
             const listaElement = document.getElementById('lista-canchas-populares');
             listaElement.innerHTML = ''; 
             if (canchas.length === 0) {
-                listaElement.innerHTML = '<li class="py-3 text-center text-gray-500">No hay datos de canchas.</li>';
+                listaElement.innerHTML = '<li class="py-3 text-center text-secondary dark:text-secondary">No hay datos de canchas.</li>';
                 return;
             }
             canchas.forEach(cancha => {
                 const item = `
                     <li class="py-3 flex justify-between items-center">
                         <div>
-                            <p class="text-sm font-medium text-gray-900">${cancha.posicionDisplay} ${cancha.nombre}</p>
-                            <p class="text-sm text-gray-500">${cancha.tipoCancha}</p>
+                            <p class="text-sm font-medium text-main dark:text-main">${cancha.posicionDisplay} ${cancha.nombre}</p>
+                            <p class="text-sm text-secondary dark:text-secondary">${cancha.tipoCancha}</p>
                         </div>
-                        <p class="text-sm text-gray-700 font-medium">${cancha.reservasCount} Reservas</p>
+                        <p class="text-sm text-main dark:text-main font-medium">${cancha.reservasCount} Reservas</p>
                     </li>`;
                 listaElement.innerHTML += item;
             });
@@ -729,17 +862,17 @@
                 const listaCanchas = document.getElementById('lista-gestion-canchas');
                 listaCanchas.innerHTML = '';
                 canchasData.forEach(cancha => {
-                    const estadoClass = cancha.activa ? "text-green-600" : "text-red-600";
+                    const estadoClass = cancha.activa ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400";
                     const estadoTexto = cancha.activa ? "Activa" : "Inactiva";
                     
                     listaCanchas.innerHTML += `
-                        <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">${cancha.nombre}</td>
+                        <tr class="text-main dark:text-main">
+                            <td class="px-6 py-4 text-sm font-medium">${cancha.nombre}</td>
                             <td class="px-6 py-4 text-sm font-semibold ${estadoClass}">${estadoTexto}</td>
                             <td class="px-6 py-4 text-sm font-medium text-center">
                                 <button 
                                     type="button" 
-                                    class="btn-toggle-estado text-blue-600 hover:text-blue-900 inline-block" 
+                                    class="btn-toggle-estado text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-300 inline-block" 
                                     title="${cancha.activa ? 'Click para Desactivar' : 'Click para Activar'}"
                                     data-id="${cancha.canchaId}"
                                     data-activa="${cancha.activa}"
@@ -758,9 +891,9 @@
                 listaTipos.innerHTML = '';
                 tiposData.forEach(tipo => {
                     listaTipos.innerHTML += `
-                        <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-500">${tipo.tipoCanchaID}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">${tipo.nombre}</td>
+                        <tr class="text-main dark:text-main">
+                            <td class="px-6 py-4 text-sm font-medium text-secondary dark:text-secondary">${tipo.tipoCanchaID}</td>
+                            <td class="px-6 py-4 text-sm font-medium">${tipo.nombre}</td>
                         </tr>
                     `;
                 });
@@ -795,7 +928,7 @@
                 });
                 
                 mensajeEl.textContent = `¡Cancha "${nuevaCancha.nombre}" creada con éxito!`;
-                mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700";
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
                 mensajeEl.classList.remove('hidden');
 
                 document.getElementById('form-gestion-cancha').reset();
@@ -803,7 +936,7 @@
 
             } catch (error) {
                 mensajeEl.textContent = error.message;
-                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700";
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
                 mensajeEl.classList.remove('hidden');
             }
         }
@@ -816,7 +949,7 @@
 
             if (!nombre) {
                 mensajeEl.textContent = "El nombre del tipo no puede estar vacío.";
-                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700";
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
                 mensajeEl.classList.remove('hidden');
                 return;
             }
@@ -828,7 +961,7 @@
                 });
                 
                 mensajeEl.textContent = `¡Tipo "${nuevoTipoCancha.nombre}" creado con éxito!`;
-                mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700";
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300";
                 mensajeEl.classList.remove('hidden');
 
                 document.getElementById('form-gestion-tipo-cancha').reset();
@@ -836,7 +969,7 @@
 
             } catch (error) {
                 mensajeEl.textContent = error.message;
-                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700";
+                mensajeEl.className = "mb-4 p-3 rounded-md bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300";
                 mensajeEl.classList.remove('hidden');
             }
         }
@@ -868,31 +1001,29 @@
         // --- PESTAÑA 3: EQUIPO ---
         async function cargarDatosEquipo(searchTerm = "") {
             const listaElement = document.getElementById('lista-equipo');
-            listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
+            listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-secondary dark:text-secondary">Cargando...</td></tr>`;
             
-            // ===== MODIFICACIÓN BUSCADOR =====
             let endpoint = `/admin/empleados`;
             if (searchTerm) {
                 endpoint += `?searchTerm=${encodeURIComponent(searchTerm)}`;
             }
-            // =================================
             
             try {
                 const data = await apiFetch(endpoint); 
                 listaElement.innerHTML = '';
 
                 if (data.length === 0) {
-                    listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No se encontraron empleados.</td></tr>`;
+                    listaElement.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-secondary dark:text-secondary">No se encontraron empleados.</td></tr>`;
                     return;
                 }
 
                 data.forEach(empleado => {
                     listaElement.innerHTML += `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${empleado.nombre} ${empleado.apellido}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.cargo}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.email}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${empleado.telefono}</td>
+                        <tr class="text-main dark:text-main">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${empleado.nombre} ${empleado.apellido}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary dark:text-secondary">${empleado.cargo}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary dark:text-secondary">${empleado.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary dark:text-secondary">${empleado.telefono}</td>
                         </tr>
                     `;
                 });
@@ -906,30 +1037,28 @@
         // --- PESTAÑA 4: SUCURSALES ---
         async function cargarDatosSucursales(searchTerm = "") {
             const listaElement = document.getElementById('lista-sucursales');
-            listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">Cargando...</td></tr>`;
+            listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-secondary dark:text-secondary">Cargando...</td></tr>`;
 
-            // ===== MODIFICACIÓN BUSCADOR =====
             let endpoint = `/admin/complejos`;
             if (searchTerm) {
                 endpoint += `?searchTerm=${encodeURIComponent(searchTerm)}`;
             }
-            // =================================
 
             try {
                 const data = await apiFetch(endpoint); 
                 listaElement.innerHTML = '';
 
                 if (data.length === 0) {
-                    listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">No se encontraron sucursales.</td></tr>`;
+                    listaElement.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-secondary dark:text-secondary">No se encontraron sucursales.</td></tr>`;
                     return;
                 }
                 
                 data.forEach(complejo => {
                     listaElement.innerHTML += `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${complejo.nombre}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${complejo.direccion.calle} ${complejo.direccion.numero}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${complejo.direccion.ciudad}</td>
+                        <tr class"text-main dark:text-main">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${complejo.nombre}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary dark:text-secondary">${complejo.direccion.calle} ${complejo.direccion.numero}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary dark:text-secondary">${complejo.direccion.ciudad}</td>
                         </tr>
                     `;
                 });

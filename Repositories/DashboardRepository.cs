@@ -217,7 +217,7 @@ namespace complejoDeportivo.Repositories.Dashboard
                     HorasTotales = g.Sum(d => d.CantidadHoras)
                 })
                 .OrderByDescending(dto => dto.ReservasCount)
-                .Take(10)
+                .Take(5)
                 .ToListAsync();
 
             return CanchaPopularDto.AplicarRanking(canchas);
@@ -281,6 +281,7 @@ namespace complejoDeportivo.Repositories.Dashboard
                     Total = r.Total,
                     FechaCreacion = r.FechaCreacion
                 })
+                .Take(5)
                 .ToListAsync();
         }
 
